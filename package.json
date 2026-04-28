@@ -1,0 +1,67 @@
+{
+  "name": "agent-replay",
+  "version": "0.1.0",
+  "description": "Record and deterministically replay agent interactions for debugging",
+  "private": true,
+  "license": "MIT",
+  "author": "Rick Somers <rick@reaatech.com> (https://reaatech.com)",
+  "homepage": "https://github.com/reaatech/agent-replay#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/reaatech/agent-replay.git"
+  },
+  "bugs": {
+    "url": "https://github.com/reaatech/agent-replay/issues"
+  },
+  "keywords": [
+    "agent",
+    "replay",
+    "llm",
+    "debugging",
+    "testing",
+    "deterministic"
+  ],
+  "type": "module",
+  "scripts": {
+    "build": "pnpm -r build",
+    "dev": "pnpm -r --parallel dev",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "lint": "eslint . --ext .ts,.tsx",
+    "lint:fix": "eslint . --ext .ts,.tsx --fix",
+    "format": "prettier --write \"**/*.{ts,tsx,json,md}\"",
+    "format:check": "prettier --check \"**/*.{ts,tsx,json,md}\"",
+    "type-check": "pnpm -r type-check",
+    "clean": "pnpm -r clean && rm -rf node_modules"
+  },
+  "devDependencies": {
+    "@types/node": "^20.12.0",
+    "@typescript-eslint/eslint-plugin": "^7.6.0",
+    "@typescript-eslint/parser": "^7.6.0",
+    "@vitest/coverage-v8": "1.6.0",
+    "eslint": "^8.57.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-import": "^2.29.1",
+    "husky": "^9.0.11",
+    "lint-staged": "^15.2.2",
+    "prettier": "^3.2.5",
+    "tsx": "^4.7.2",
+    "typedoc": "^0.28.19",
+    "typescript": "^5.4.5",
+    "vitest": "^1.5.0"
+  },
+  "packageManager": "pnpm@8.15.6",
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "lint-staged": {
+    "*.{ts,tsx}": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "*.{json,md}": [
+      "prettier --write"
+    ]
+  }
+}
