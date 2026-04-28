@@ -18,8 +18,8 @@ importers:
         specifier: ^7.6.0
         version: 7.18.0(eslint@8.57.1)(typescript@5.9.3)
       '@vitest/coverage-v8':
-        specifier: 1.6.0
-        version: 1.6.0(vitest@1.6.1)
+        specifier: 1.6.1
+        version: 1.6.1(vitest@1.6.1)
       eslint:
         specifier: ^8.57.0
         version: 8.57.1
@@ -64,8 +64,8 @@ importers:
         version: link:../shared
     devDependencies:
       '@vitest/coverage-v8':
-        specifier: ^1.6.0
-        version: 1.6.0(vitest@1.6.1)
+        specifier: ^1.6.1
+        version: 1.6.1(vitest@1.6.1)
       tsup:
         specifier: ^8.0.2
         version: 8.5.1(tsx@4.21.0)(typescript@5.9.3)
@@ -89,8 +89,8 @@ importers:
         version: 14.0.3
     devDependencies:
       '@vitest/coverage-v8':
-        specifier: ^1.6.0
-        version: 1.6.0(vitest@1.6.1)
+        specifier: ^1.6.1
+        version: 1.6.1(vitest@1.6.1)
       tsup:
         specifier: ^8.0.2
         version: 8.5.1(tsx@4.21.0)(typescript@5.9.3)
@@ -108,8 +108,8 @@ importers:
         version: link:../shared
     devDependencies:
       '@vitest/coverage-v8':
-        specifier: ^1.6.0
-        version: 1.6.0(vitest@1.6.1)
+        specifier: ^1.6.1
+        version: 1.6.1(vitest@1.6.1)
       tsup:
         specifier: ^8.0.2
         version: 8.5.1(tsx@4.21.0)(typescript@5.9.3)
@@ -130,8 +130,8 @@ importers:
         version: link:../shared
     devDependencies:
       '@vitest/coverage-v8':
-        specifier: ^1.6.0
-        version: 1.6.0(vitest@1.6.1)
+        specifier: ^1.6.1
+        version: 1.6.1(vitest@1.6.1)
       tsup:
         specifier: ^8.0.2
         version: 8.5.1(tsx@4.21.0)(typescript@5.9.3)
@@ -152,8 +152,8 @@ importers:
         version: link:../shared
     devDependencies:
       '@vitest/coverage-v8':
-        specifier: ^1.6.0
-        version: 1.6.0(vitest@1.6.1)
+        specifier: ^1.6.1
+        version: 1.6.1(vitest@1.6.1)
       tsup:
         specifier: ^8.0.2
         version: 8.5.1(tsx@4.21.0)(typescript@5.9.3)
@@ -167,8 +167,8 @@ importers:
   packages/shared:
     devDependencies:
       '@vitest/coverage-v8':
-        specifier: ^1.6.0
-        version: 1.6.0(vitest@1.6.1)
+        specifier: ^1.6.1
+        version: 1.6.1(vitest@1.6.1)
       tsup:
         specifier: ^8.0.2
         version: 8.5.1(tsx@4.21.0)(typescript@5.9.3)
@@ -186,8 +186,8 @@ importers:
         version: link:../shared
     devDependencies:
       '@vitest/coverage-v8':
-        specifier: ^1.6.0
-        version: 1.6.0(vitest@1.6.1)
+        specifier: ^1.6.1
+        version: 1.6.1(vitest@1.6.1)
       tsup:
         specifier: ^8.0.2
         version: 8.5.1(tsx@4.21.0)(typescript@5.9.3)
@@ -1197,10 +1197,10 @@ packages:
     resolution: {integrity: sha512-WmoN8qaIAo7WTYWbAZuG8PYEhn5fkz7dZrqTBZ7dtt//lL2Gwms1IcnQ5yHqjDfX8Ft5j4YzDM23f87zBfDe9g==}
     dev: true
 
-  /@vitest/coverage-v8@1.6.0(vitest@1.6.1):
-    resolution: {integrity: sha512-KvapcbMY/8GYIG0rlwwOKCVNRc0OL20rrhFkg/CHNzncV03TE2XWvO5w9uZYoxNiMEBacAJt3unSOiZ7svePew==}
+  /@vitest/coverage-v8@1.6.1(vitest@1.6.1):
+    resolution: {integrity: sha512-6YeRZwuO4oTGKxD3bijok756oktHSIm3eczVVzNe3scqzuhLwltIF3S9ZL/vwOVIpURmU6SnZhziXXAfw8/Qlw==}
     peerDependencies:
-      vitest: 1.6.0
+      vitest: 1.6.1
     dependencies:
       '@ampproject/remapping': 2.3.0
       '@bcoe/v8-coverage': 0.2.3
