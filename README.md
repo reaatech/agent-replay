@@ -13,13 +13,13 @@
 
 Developing AI agents requires rapid iteration. Each debug cycle burns tokens and costs money. **Agent Replay** decouples agent debugging from live LLM calls by recording complete interaction traces that can be replayed deterministically.
 
-| Capability              | Description                                                                |
-| ----------------------- | -------------------------------------------------------------------------- |
-| **Record & Replay**     | Capture every LLM call, tool invocation, and routing decision in a trace.  |
-| **Token-Free Debugging** | Replay traces with stubbed responses — zero API calls, zero cost.          |
-| **Partial Replay**      | Replay up to step _N_, then go live. Debug "the agent was fine for 6 turns then went sideways." |
-| **Diff Mode**           | Run live LLM calls against a recorded trace and compare outputs to detect behavioral drift. |
-| **Deterministic Testing** | Seeded PRNG, frozen clock, and snapshot environment for reproducible tests. |
+| Capability                | Description                                                                                     |
+| ------------------------- | ----------------------------------------------------------------------------------------------- |
+| **Record & Replay**       | Capture every LLM call, tool invocation, and routing decision in a trace.                       |
+| **Token-Free Debugging**  | Replay traces with stubbed responses — zero API calls, zero cost.                               |
+| **Partial Replay**        | Replay up to step _N_, then go live. Debug "the agent was fine for 6 turns then went sideways." |
+| **Diff Mode**             | Run live LLM calls against a recorded trace and compare outputs to detect behavioral drift.     |
+| **Deterministic Testing** | Seeded PRNG, frozen clock, and snapshot environment for reproducible tests.                     |
 
 ## Current Status
 
@@ -46,28 +46,28 @@ pnpm test
 
 ### Scripts
 
-| Command             | Description                           |
-| ------------------- | ------------------------------------- |
-| `pnpm build`        | Build all packages                    |
-| `pnpm test`         | Run test suite                        |
-| `pnpm test:watch`   | Run tests in watch mode               |
-| `pnpm test:coverage`| Run tests with coverage report        |
-| `pnpm lint`         | Lint all packages                     |
-| `pnpm format`       | Format code with Prettier             |
-| `pnpm type-check`   | Type-check all packages               |
-| `pnpm clean`        | Clean build artifacts                 |
+| Command              | Description                    |
+| -------------------- | ------------------------------ |
+| `pnpm build`         | Build all packages             |
+| `pnpm test`          | Run test suite                 |
+| `pnpm test:watch`    | Run tests in watch mode        |
+| `pnpm test:coverage` | Run tests with coverage report |
+| `pnpm lint`          | Lint all packages              |
+| `pnpm format`        | Format code with Prettier      |
+| `pnpm type-check`    | Type-check all packages        |
+| `pnpm clean`         | Clean build artifacts          |
 
 ## Packages
 
-| Package                    | npm Scope                | Description                                    | Status       |
-| -------------------------- | ------------------------ | ---------------------------------------------- | ------------ |
-| `@reaatech/shared`         | `packages/shared`        | Shared types, interfaces, and utilities        | In progress  |
-| `@reaatech/core`           | `packages/core`          | Recording, replay, and diff engines            | In progress  |
-| `@reaatech/interceptors`   | `packages/interceptors`  | LLM provider interceptors (OpenAI, Anthropic)   | In progress  |
-| `@reaatech/agent-replay`   | `packages/agent-replay`  | Convenience package — re-exports core + interceptors | In progress  |
-| `@reaatech/cli`            | `packages/cli`           | Command-line interface                         | Planned      |
-| `@reaatech/integrations`   | `packages/integrations`  | Framework integrations (LangChain, LangGraph)   | Planned      |
-| `@reaatech/web-ui`         | `packages/web-ui`        | Web-based trace viewer                         | Planned      |
+| Package                  | npm Scope               | Description                                          | Status      |
+| ------------------------ | ----------------------- | ---------------------------------------------------- | ----------- |
+| `@reaatech/shared`       | `packages/shared`       | Shared types, interfaces, and utilities              | In progress |
+| `@reaatech/core`         | `packages/core`         | Recording, replay, and diff engines                  | In progress |
+| `@reaatech/interceptors` | `packages/interceptors` | LLM provider interceptors (OpenAI, Anthropic)        | In progress |
+| `@reaatech/agent-replay` | `packages/agent-replay` | Convenience package — re-exports core + interceptors | In progress |
+| `@reaatech/cli`          | `packages/cli`          | Command-line interface                               | Planned     |
+| `@reaatech/integrations` | `packages/integrations` | Framework integrations (LangChain, LangGraph)        | Planned     |
+| `@reaatech/web-ui`       | `packages/web-ui`       | Web-based trace viewer                               | Planned     |
 
 ## Architecture
 
@@ -105,13 +105,16 @@ const engine = new RecordingEngine();
 const session = engine.startRecording({ name: 'my-agent-run' });
 
 const spanId = engine.startSpan('llm-call', 'llm_call');
-engine.captureEvent({
-  timestamp: Date.now(),
-  type: 'response',
-  name: 'llm-response',
-  attributes: {},
-  data: { content: 'Hello!' },
-}, { spanId });
+engine.captureEvent(
+  {
+    timestamp: Date.now(),
+    type: 'response',
+    name: 'llm-response',
+    attributes: {},
+    data: { content: 'Hello!' },
+  },
+  { spanId }
+);
 engine.endSpan(spanId);
 
 const trace = engine.stopRecording(session);
@@ -119,12 +122,12 @@ const trace = engine.stopRecording(session);
 
 ### Replay Modes
 
-| Mode        | Behavior                                                              |
-| ----------- | --------------------------------------------------------------------- |
-| `stubbed`   | Returns recorded responses — zero LLM calls.                          |
-| `live`      | Executes real LLM calls alongside the trace.                          |
-| `partial`   | Replays to a checkpoint, then switches to live.                        |
-| `diff`      | Runs live and compares outputs against the recorded trace.            |
+| Mode      | Behavior                                                   |
+| --------- | ---------------------------------------------------------- |
+| `stubbed` | Returns recorded responses — zero LLM calls.               |
+| `live`    | Executes real LLM calls alongside the trace.               |
+| `partial` | Replays to a checkpoint, then switches to live.            |
+| `diff`    | Runs live and compares outputs against the recorded trace. |
 
 ### State Capture
 
@@ -138,12 +141,12 @@ Functions, closures, and external resources (DB connections, file handles) are n
 
 ## Roadmap
 
-| Phase  | Focus                                      | Timeline   |
-| ------ | ------------------------------------------ | ---------- |
-| **1**  | Core recording/replay engine + trace format | In progress |
-| **2**  | Partial replay, diff mode, CLI debugger    | Upcoming    |
-| **3**  | Framework integrations, test suite         | Upcoming    |
-| **4**  | Performance, enterprise features, web UI   | Upcoming    |
+| Phase | Focus                                       | Timeline    |
+| ----- | ------------------------------------------- | ----------- |
+| **1** | Core recording/replay engine + trace format | In progress |
+| **2** | Partial replay, diff mode, CLI debugger     | Upcoming    |
+| **3** | Framework integrations, test suite          | Upcoming    |
+| **4** | Performance, enterprise features, web UI    | Upcoming    |
 
 See [DEV_PLAN.md](./DEV_PLAN.md) for the detailed plan with individual task breakdowns.
 
