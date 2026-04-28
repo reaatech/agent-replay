@@ -169,12 +169,12 @@ export class DeterminismController {
   mockUUID(sequence: string[]): void {
     let index = 0;
     this.originalUUID = randomUUID;
-    crypto.randomUUID = (() => {
+    globalThis.crypto.randomUUID = (() => {
       const value = sequence[index++];
       return value
         ? (value as `${string}-${string}-${string}-${string}-${string}`)
         : `mock-uuid-${index}`;
-    }) as typeof crypto.randomUUID;
+    }) as typeof globalThis.crypto.randomUUID;
   }
 
   /**
@@ -190,7 +190,7 @@ export class DeterminismController {
       this.originalRandom = null;
     }
     if (this.originalUUID) {
-      crypto.randomUUID = this.originalUUID as typeof crypto.randomUUID;
+      globalThis.crypto.randomUUID = this.originalUUID as typeof globalThis.crypto.randomUUID;
       this.originalUUID = null;
     }
   }

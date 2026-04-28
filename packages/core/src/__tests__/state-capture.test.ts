@@ -198,10 +198,10 @@ describe('DeterminismController', () => {
     ] as unknown as `${string}-${string}-${string}-${string}-${string}`[];
     controller.mockUUID(uuids);
 
-    expect(crypto.randomUUID()).toBe('uuid-1');
-    expect(crypto.randomUUID()).toBe('uuid-2');
-    expect(crypto.randomUUID()).toBe('uuid-3');
-    expect(crypto.randomUUID()).toMatch(/mock-uuid/);
+    expect(globalThis.crypto.randomUUID()).toBe('uuid-1');
+    expect(globalThis.crypto.randomUUID()).toBe('uuid-2');
+    expect(globalThis.crypto.randomUUID()).toBe('uuid-3');
+    expect(globalThis.crypto.randomUUID()).toMatch(/mock-uuid/);
   });
 
   it('should restore all mocks', () => {
