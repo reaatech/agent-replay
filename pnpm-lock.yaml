@@ -181,9 +181,6 @@ importers:
 
   packages/web-ui:
     dependencies:
-      '@reaatech/core':
-        specifier: workspace:*
-        version: link:../core
       '@reaatech/shared':
         specifier: workspace:*
         version: link:../shared
