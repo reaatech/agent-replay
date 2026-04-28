@@ -1,0 +1,55 @@
+{
+  "name": "@reaatech/shared",
+  "version": "0.1.0",
+  "description": "Shared types and utilities for Agent Replay",
+  "license": "MIT",
+  "author": "Rick Somers <rick@reaatech.com> (https://reaatech.com)",
+  "homepage": "https://github.com/reaatech/agent-replay#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/reaatech/agent-replay.git",
+    "directory": "packages/shared"
+  },
+  "bugs": {
+    "url": "https://github.com/reaatech/agent-replay/issues"
+  },
+  "keywords": [
+    "agent",
+    "replay",
+    "llm",
+    "types"
+  ],
+  "type": "module",
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsup src/index.ts --format esm --dts",
+    "dev": "tsup src/index.ts --format esm --dts --watch",
+    "type-check": "tsc --noEmit",
+    "test": "vitest run",
+    "clean": "rm -rf dist",
+    "prepublishOnly": "pnpm run build && pnpm test"
+  },
+  "devDependencies": {
+    "@vitest/coverage-v8": "^1.6.0",
+    "tsup": "^8.0.2",
+    "typescript": "^5.4.5",
+    "vitest": "^1.5.0"
+  }
+}
