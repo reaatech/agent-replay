@@ -169,12 +169,26 @@ export class DeterminismController {
   mockUUID(sequence: string[]): void {
     let index = 0;
     this.originalUUID = randomUUID;
-    globalThis.crypto.randomUUID = (() => {
-      const value = sequence[index++];
-      return value
-        ? (value as `${string}-${string}-${string}-${string}-${string}`)
-        : `mock-uuid-${index}`;
-    }) as typeof globalThis.crypto.randomUUID;
+
+    // Ensure the crypto global exists (Node 18 compat)
+    if (!(globalThis as Record<string, unknown>).crypto) {
+      Object.defineProperty(globalThis, 'crypto', {
+        value: { randomUUID },
+        writable: true,
+        configurable: true,
+      });
+    }
+
+    Object.defineProperty(globalThis.crypto as unknown as Record<string, unknown>, 'randomUUID', {
+      value: () => {
+        const value = sequence[index++];
+        return value
+          ? (value as `${string}-${string}-${string}-${string}-${string}`)
+          : `mock-uuid-${index}`;
+      },
+      writable: true,
+      configurable: true,
+    });
   }
 
   /**
@@ -190,7 +204,11 @@ export class DeterminismController {
       this.originalRandom = null;
     }
     if (this.originalUUID) {
-      globalThis.crypto.randomUUID = this.originalUUID as typeof globalThis.crypto.randomUUID;
+      Object.defineProperty(globalThis.crypto as unknown as Record<string, unknown>, 'randomUUID', {
+        value: this.originalUUID,
+        writable: true,
+        configurable: true,
+      });
       this.originalUUID = null;
     }
   }
