@@ -1,3 +1,5 @@
+import { randomUUID } from 'node:crypto';
+
 import { type SerializedState, StateCaptureError } from '@reaatech/shared';
 
 /**
@@ -166,7 +168,7 @@ export class DeterminismController {
    */
   mockUUID(sequence: string[]): void {
     let index = 0;
-    this.originalUUID = crypto.randomUUID.bind(crypto);
+    this.originalUUID = randomUUID;
     crypto.randomUUID = (() => {
       const value = sequence[index++];
       return value
