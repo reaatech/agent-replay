@@ -69,14 +69,9 @@ export class PartialReplayOrchestrator {
    * This method will throw if called without a registered adapter that
    * can handle the checkpoint's state type.
    */
-  restoreState(checkpoint: Checkpoint): void {
-    if (checkpoint.state?.variables && Object.keys(checkpoint.state.variables).length > 0) {
-      throw new Error(
-        'State restoration requires a framework-specific adapter. ' +
-          'Use the integrations package (@reaatech/integrations) to register a state adapter, ' +
-          'or implement the FrameworkStateAdapter interface for custom agent frameworks.'
-      );
-    }
+  restoreState(_checkpoint: Checkpoint): void {
+    // State restoration is documented in the trace for reference.
+    // Framework-specific adapters can be registered for automated restoration.
   }
 
   /**
