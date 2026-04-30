@@ -1,4 +1,4 @@
-import { type Trace } from '@reaatech/shared';
+import type { Trace } from '@reaatech/agent-replay-shared';
 
 export interface RegressionThresholds {
   /** Error rate increase that triggers regression (0-1) */
@@ -60,7 +60,7 @@ export class RegressionDetector {
     regressions.push(...this.detectLLMCallRegression(baseline, current));
     regressions.push(...this.detectToolCallRegression(baseline, current));
 
-    const severities = regressions.map(r => r.severity);
+    const severities = regressions.map((r) => r.severity);
     const overallSeverity = severities.includes('critical')
       ? 'critical'
       : severities.includes('high')
@@ -81,8 +81,8 @@ export class RegressionDetector {
   }
 
   private detectErrorRegression(baseline: Trace, current: Trace): Regression[] {
-    const baselineErrors = baseline.spans.filter(s => s.status === 'error').length;
-    const currentErrors = current.spans.filter(s => s.status === 'error').length;
+    const baselineErrors = baseline.spans.filter((s) => s.status === 'error').length;
+    const currentErrors = current.spans.filter((s) => s.status === 'error').length;
     const baselineRate = baseline.spans.length > 0 ? baselineErrors / baseline.spans.length : 0;
     const currentRate = current.spans.length > 0 ? currentErrors / current.spans.length : 0;
     const increase = currentRate - baselineRate;
@@ -150,8 +150,8 @@ export class RegressionDetector {
   }
 
   private detectLLMCallRegression(baseline: Trace, current: Trace): Regression[] {
-    const baselineCalls = baseline.spans.filter(s => s.kind === 'llm_call').length;
-    const currentCalls = current.spans.filter(s => s.kind === 'llm_call').length;
+    const baselineCalls = baseline.spans.filter((s) => s.kind === 'llm_call').length;
+    const currentCalls = current.spans.filter((s) => s.kind === 'llm_call').length;
 
     if (baselineCalls <= 0) return [];
 
@@ -180,21 +180,21 @@ export class RegressionDetector {
     if (!this.thresholds.strictToolCallOrder) return [];
 
     const baselineTools = baseline.spans
-      .filter(s => s.kind === 'tool_call')
-      .map(s => s.events.find(e => e.type === 'request')?.data as { name?: string } | undefined)
-      .map(d => d?.name ?? 'unknown');
+      .filter((s) => s.kind === 'tool_call')
+      .map((s) => s.events.find((e) => e.type === 'request')?.data as { name?: string } | undefined)
+      .map((d) => d?.name ?? 'unknown');
 
     const currentTools = current.spans
-      .filter(s => s.kind === 'tool_call')
-      .map(s => s.events.find(e => e.type === 'request')?.data as { name?: string } | undefined)
-      .map(d => d?.name ?? 'unknown');
+      .filter((s) => s.kind === 'tool_call')
+      .map((s) => s.events.find((e) => e.type === 'request')?.data as { name?: string } | undefined)
+      .map((d) => d?.name ?? 'unknown');
 
     if (JSON.stringify(baselineTools) !== JSON.stringify(currentTools)) {
       return [
         {
           type: 'tool_call_sequence_change',
           severity: 'high',
-          message: `Tool call sequence changed`,
+          message: 'Tool call sequence changed',
           metric: {
             name: 'tool_call_sequence',
             before: baselineTools.length,
@@ -214,10 +214,10 @@ export class RegressionDetector {
     }
 
     const bySeverity = {
-      critical: regressions.filter(r => r.severity === 'critical').length,
-      high: regressions.filter(r => r.severity === 'high').length,
-      medium: regressions.filter(r => r.severity === 'medium').length,
-      low: regressions.filter(r => r.severity === 'low').length,
+      critical: regressions.filter((r) => r.severity === 'critical').length,
+      high: regressions.filter((r) => r.severity === 'high').length,
+      medium: regressions.filter((r) => r.severity === 'medium').length,
+      low: regressions.filter((r) => r.severity === 'low').length,
     };
 
     const parts: string[] = [];
@@ -235,7 +235,7 @@ export class RegressionDetector {
  */
 export function formatRegressionReport(report: RegressionReport): string {
   const lines = [
-    `Regression Report`,
+    'Regression Report',
     `  Baseline: ${report.baseline}`,
     `  Current:  ${report.current}`,
     `  Severity: ${report.overallSeverity}`,
@@ -248,7 +248,7 @@ export function formatRegressionReport(report: RegressionReport): string {
       `[${reg.severity.toUpperCase()}] ${reg.type}`,
       `  ${reg.message}`,
       `  ${reg.metric.name}: ${reg.metric.before} → ${reg.metric.after} (change: ${reg.metric.change < 10 ? reg.metric.change.toFixed(2) : String(reg.metric.change)})`,
-      ''
+      '',
     );
   }
 

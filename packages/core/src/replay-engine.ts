@@ -1,11 +1,11 @@
 import {
-  type Trace,
-  type ReplayConfig,
-  type PartialReplayConfig,
   type DiffReplayConfig,
-  type ReplayResult,
+  type PartialReplayConfig,
+  type ReplayConfig,
   ReplayFailedError,
-} from '@reaatech/shared';
+  type ReplayResult,
+  type Trace,
+} from '@reaatech/agent-replay-shared';
 
 import { DiffEngine } from './diff-engine.js';
 import { PartialReplayOrchestrator } from './partial-replay.js';
@@ -41,7 +41,7 @@ export class ReplayEngine {
     for (let i = 0; i < totalSteps; i++) {
       const span = trace.spans[i];
       if (span.kind === 'llm_call') {
-        const responseEvent = span.events.find(e => e.type === 'response');
+        const responseEvent = span.events.find((e) => e.type === 'response');
         if (responseEvent) {
           outputs.push(responseEvent.data);
         }
@@ -64,15 +64,15 @@ export class ReplayEngine {
   private liveReplay(_trace: Trace, _config: ReplayConfig, _startTime: number): ReplayResult {
     throw new ReplayFailedError(
       'Live replay requires LLM provider interceptors to be installed. ' +
-        'Use the @reaatech/interceptors package to install interceptors, or use stubbed mode for replay without live LLM calls.',
-      0
+        'Use the @reaatech/agent-replay-interceptors package to install interceptors, or use stubbed mode for replay without live LLM calls.',
+      0,
     );
   }
 
   private partialReplay(
     trace: Trace,
     config: PartialReplayConfig,
-    startTime: number
+    startTime: number,
   ): ReplayResult {
     const orchestrator = new PartialReplayOrchestrator();
     const checkpoint = orchestrator.findCheckpoint(trace, config.checkpointId);
@@ -89,7 +89,7 @@ export class ReplayEngine {
     for (let i = 0; i < liveSpans.length; i++) {
       const span = liveSpans[i];
       if (span.kind === 'llm_call') {
-        const responseEvent = span.events.find(e => e.type === 'response');
+        const responseEvent = span.events.find((e) => e.type === 'response');
         if (responseEvent) {
           liveOutputs.push(responseEvent.data);
         }

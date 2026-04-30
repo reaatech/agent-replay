@@ -1,5 +1,5 @@
-import { describe, it, expect, beforeEach } from 'vitest';
-import { RecordingEngine } from '@reaatech/core';
+import { RecordingEngine } from '@reaatech/agent-replay-core';
+import { beforeEach, describe, expect, it } from 'vitest';
 
 import { createLangChainHandler, langchainStateAdapter } from '../langchain.js';
 
@@ -33,7 +33,7 @@ describe('LangChain Integration', () => {
       await handler.handleLLMStart({ name: 'gpt-4', model: 'gpt-4' }, ['Hello'], 'run-1');
       await handler.handleLLMEnd(
         { text: 'Hi there', usage: { prompt: 1, completion: 2, total: 3 } },
-        'run-1'
+        'run-1',
       );
 
       const trace = engine.stopRecording(session);
@@ -87,7 +87,7 @@ describe('LangChain Integration', () => {
       await handler.handleError(new Error('API failure'), 'run-4');
 
       const trace = engine.stopRecording(session);
-      const errorEvents = trace.spans.flatMap(s => s.events).filter(e => e.type === 'error');
+      const errorEvents = trace.spans.flatMap((s) => s.events).filter((e) => e.type === 'error');
       expect(errorEvents.length).toBeGreaterThan(0);
     });
 
@@ -101,7 +101,7 @@ describe('LangChain Integration', () => {
       await handler.handleError(new Error('Standalone error'), 'run-no-start');
 
       const trace = engine.stopRecording(session);
-      const errorSpans = trace.spans.filter(s => s.kind === 'error');
+      const errorSpans = trace.spans.filter((s) => s.kind === 'error');
       expect(errorSpans.length).toBeGreaterThan(0);
     });
 

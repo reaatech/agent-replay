@@ -1,11 +1,11 @@
-import { describe, it, expect } from 'vitest';
 import { Command, Option } from 'commander';
+import { describe, expect, it } from 'vitest';
 
+import { debugCommand } from '../commands/debug.js';
+import { diffCommand } from '../commands/diff.js';
+import { exploreCommand } from '../commands/explore.js';
 import { recordCommand } from '../commands/record.js';
 import { replayCommand } from '../commands/replay.js';
-import { exploreCommand } from '../commands/explore.js';
-import { diffCommand } from '../commands/diff.js';
-import { debugCommand } from '../commands/debug.js';
 
 /**
  * Helper to parse options from a command without invoking its action handler.
@@ -26,7 +26,7 @@ function parseOptions(command: Command, argv: string[]): Record<string, unknown>
 }
 
 function getOption(command: Command, longFlag: string): Option | undefined {
-  return command.options.find(o => o.long === longFlag);
+  return command.options.find((o) => o.long === longFlag);
 }
 
 describe('record command', () => {
@@ -306,7 +306,7 @@ describe('debug command', () => {
   it('should have correct name and description', () => {
     expect(debugCommand.name()).toBe('debug');
     expect(debugCommand.description()).toBe(
-      'Debug a trace with step-through, breakpoints, and watchpoints'
+      'Debug a trace with step-through, breakpoints, and watchpoints',
     );
   });
 
@@ -329,7 +329,7 @@ describe('debug command', () => {
     expect(opt).toBeDefined();
     expect(opt?.defaultValue).toBeUndefined();
     expect(opt?.description).toBe(
-      'Break on span kind (llm_call, tool_call, agent_step, routing_decision, state_change, error)'
+      'Break on span kind (llm_call, tool_call, agent_step, routing_decision, state_change, error)',
     );
   });
 
@@ -440,7 +440,7 @@ describe('CLI command suite', () => {
     program.addCommand(diffCommand);
     program.addCommand(debugCommand);
     expect(program.commands).toHaveLength(5);
-    const names = program.commands.map(c => c.name());
+    const names = program.commands.map((c) => c.name());
     expect(names).toContain('record');
     expect(names).toContain('replay');
     expect(names).toContain('explore');

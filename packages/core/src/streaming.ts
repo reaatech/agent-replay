@@ -1,4 +1,4 @@
-import { type StreamChunk, type RecordedStream, type LLMResponse } from '@reaatech/shared';
+import type { LLMResponse, RecordedStream, StreamChunk } from '@reaatech/agent-replay-shared';
 
 export interface StreamingConfig {
   preserveTiming: boolean;
@@ -15,7 +15,7 @@ export class StreamingRecorder {
 
   async *record<T>(
     source: AsyncIterable<T>,
-    normalizeChunk: (native: T) => StreamChunk
+    normalizeChunk: (native: T) => StreamChunk,
   ): AsyncGenerator<T> {
     this.startTime = performance.now();
 
@@ -51,7 +51,7 @@ export class StreamingStubEngine {
 
   async *replayStream<T>(
     recorded: RecordedStream,
-    denormalizeChunk: (chunk: StreamChunk) => T
+    denormalizeChunk: (chunk: StreamChunk) => T,
   ): AsyncGenerator<T> {
     for (let i = 0; i < recorded.chunks.length; i++) {
       const chunk = recorded.chunks[i];
@@ -61,7 +61,7 @@ export class StreamingStubEngine {
         // Simple uniform delay based on total duration
         const delay = Math.round(recorded.duration / recorded.totalChunks);
         if (delay > 0) {
-          await new Promise(resolve => setTimeout(resolve, delay));
+          await new Promise((resolve) => setTimeout(resolve, delay));
         }
       }
     }

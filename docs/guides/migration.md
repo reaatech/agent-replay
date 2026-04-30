@@ -9,7 +9,7 @@ If you're currently using `console.log` or custom logging to debug agent interac
 console.log('LLM response:', response);
 
 // After
-import { RecordingEngine } from '@reaatech/core';
+import { RecordingEngine } from '@reaatech/agent-replay-core';
 const engine = new RecordingEngine();
 const session = engine.startRecording({ name: 'my-run', outputPath: './trace.artrace.json' });
 // All LLM calls are captured automatically via interceptors
@@ -39,9 +39,9 @@ Traces use semantic versioning (`major.minor.patch`).
 - **Minor version changes**: New fields added, backward compatible
 - **Patch version changes**: Bug fixes, no format changes
 
-Use `TraceMigrator` to upgrade legacy traces:
+Use `migrateTrace` to upgrade legacy traces:
 
 ```typescript
-import { TraceMigrator } from '@reaatech/core';
-const migrated = TraceMigrator.migrate(oldTrace);
+import { migrateTrace } from '@reaatech/agent-replay-core';
+const migrated = migrateTrace(oldTrace);
 ```

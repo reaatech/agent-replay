@@ -1,4 +1,4 @@
 // Re-export everything from core and interceptors for convenience
-export * from '@reaatech/core';
-export * from '@reaatech/interceptors';
-export * from '@reaatech/shared';
+export * from '@reaatech/agent-replay-core';
+export * from '@reaatech/agent-replay-interceptors';
+export * from '@reaatech/agent-replay-shared';

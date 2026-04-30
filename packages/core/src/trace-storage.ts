@@ -1,16 +1,16 @@
-import { readFile, writeFile, mkdir, access, readdir, unlink } from 'node:fs/promises';
-import { dirname, join, basename } from 'node:path';
+import { access, mkdir, readFile, readdir, unlink, writeFile } from 'node:fs/promises';
+import { basename, dirname, join } from 'node:path';
 
 import {
-  type Trace,
-  type TraceStorage,
-  type StorageOptions,
-  type TraceFilter,
   type SearchQuery,
-  type TraceSearchResult,
-  type TraceSummary,
+  type StorageOptions,
+  type Trace,
+  type TraceFilter,
   TraceNotFoundError,
-} from '@reaatech/shared';
+  type TraceSearchResult,
+  type TraceStorage,
+  type TraceSummary,
+} from '@reaatech/agent-replay-shared';
 
 export class LocalFileStorage implements TraceStorage {
   private basePath: string;
@@ -125,7 +125,7 @@ export class LocalFileStorage implements TraceStorage {
   private matchesFilter(trace: Trace, filter?: TraceFilter): boolean {
     if (!filter) return true;
     if (filter.tags && filter.tags.length > 0) {
-      if (!filter.tags.some(t => trace.metadata.tags.includes(t))) return false;
+      if (!filter.tags.some((t) => trace.metadata.tags.includes(t))) return false;
     }
     if (filter.startDate && trace.metadata.createdAt < filter.startDate) return false;
     if (filter.endDate && trace.metadata.createdAt > filter.endDate) return false;

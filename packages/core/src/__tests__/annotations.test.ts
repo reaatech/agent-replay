@@ -1,5 +1,5 @@
-import { describe, it, expect } from 'vitest';
-import type { Trace } from '@reaatech/shared';
+import type { Trace } from '@reaatech/agent-replay-shared';
+import { describe, expect, it } from 'vitest';
 
 import { AnnotationManager, formatAnnotations } from '../annotations.js';
 
@@ -93,8 +93,8 @@ describe('AnnotationManager', () => {
     const updated = mgr.update(ann.id, { content: 'new', severity: 'critical' });
 
     expect(updated).not.toBeNull();
-    expect(updated!.content).toBe('new');
-    expect(updated!.severity).toBe('critical');
+    expect(updated?.content).toBe('new');
+    expect(updated?.severity).toBe('critical');
     expect(mgr.update('missing', { content: 'x' })).toBeNull();
   });
 

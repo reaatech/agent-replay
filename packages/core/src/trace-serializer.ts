@@ -1,9 +1,9 @@
-import { createWriteStream, createReadStream, existsSync } from 'node:fs';
+import { createReadStream, createWriteStream, existsSync } from 'node:fs';
 import { mkdir } from 'node:fs/promises';
 import { dirname } from 'node:path';
-import { createGzip, createGunzip } from 'node:zlib';
+import { createGunzip, createGzip } from 'node:zlib';
 
-import { type Trace, type Span, type Checkpoint, type TraceHeader } from '@reaatech/shared';
+import type { Checkpoint, Span, Trace, TraceHeader } from '@reaatech/agent-replay-shared';
 
 /**
  * Serializes traces to `.artrace.json` files using line-delimited JSON.
@@ -99,7 +99,7 @@ export class TraceSerializer {
     }
 
     const data = Buffer.concat(chunks).toString('utf-8');
-    const lines = data.split('\n').filter(line => line.trim());
+    const lines = data.split('\n').filter((line) => line.trim());
 
     if (lines.length === 0) {
       throw new Error('Empty trace file');
@@ -187,33 +187,30 @@ export class TraceSerializer {
 /**
  * Utility for migrating trace formats between versions.
  */
-export class TraceMigrator {
-  static readonly CURRENT_VERSION = '1.0.0';
+export const CURRENT_TRACE_VERSION = '1.0.0';
 
-  static migrate(trace: Trace): Trace {
-    if (trace.version === this.CURRENT_VERSION) {
-      return trace;
-    }
-
-    // Currently only one version exists
-    if (!trace.version) {
-      return {
-        ...trace,
-        version: this.CURRENT_VERSION,
-      };
-    }
-
-    throw new Error(`Unsupported trace version: ${trace.version}`);
+export function migrateTrace(trace: Trace): Trace {
+  if (trace.version === CURRENT_TRACE_VERSION) {
+    return trace;
   }
 
-  static validateVersion(header: TraceHeader): void {
-    const [major] = header.version.split('.');
-    const [currentMajor] = this.CURRENT_VERSION.split('.');
+  if (!trace.version) {
+    return {
+      ...trace,
+      version: CURRENT_TRACE_VERSION,
+    };
+  }
 
-    if (major !== currentMajor) {
-      throw new Error(
-        `Trace version ${header.version} is incompatible with current version ${this.CURRENT_VERSION}`
-      );
-    }
+  throw new Error(`Unsupported trace version: ${trace.version}`);
+}
+
+export function validateTraceVersion(header: TraceHeader): void {
+  const [major] = header.version.split('.');
+  const [currentMajor] = CURRENT_TRACE_VERSION.split('.');
+
+  if (major !== currentMajor) {
+    throw new Error(
+      `Trace version ${header.version} is incompatible with current version ${CURRENT_TRACE_VERSION}`,
+    );
   }
 }

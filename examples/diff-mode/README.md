@@ -5,7 +5,7 @@ This example shows how to compare a recorded trace against a live execution.
 ## Usage
 
 ```typescript
-import { SemanticDiffEngine, RegressionDetector } from '@reaatech/core';
+import { SemanticDiffEngine, RegressionDetector } from '@reaatech/agent-replay-core';
 
 const diffEngine = new SemanticDiffEngine();
 const result = diffEngine.compare(baselineTrace, currentTrace);

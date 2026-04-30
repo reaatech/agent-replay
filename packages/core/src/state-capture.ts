@@ -1,6 +1,6 @@
 import { randomUUID } from 'node:crypto';
 
-import { type SerializedState, StateCaptureError } from '@reaatech/shared';
+import { type SerializedState, StateCaptureError } from '@reaatech/agent-replay-shared';
 
 /**
  * Attempts to serialize agent state using structured clone.
@@ -26,7 +26,7 @@ export class StructuredCloneStrategy {
       throw new StateCaptureError(
         'Failed to capture state with structured clone',
         typeof state === 'object' ? (state?.constructor?.name ?? 'unknown') : typeof state,
-        cause instanceof Error ? cause : undefined
+        cause instanceof Error ? cause : undefined,
       );
     }
   }
@@ -145,7 +145,7 @@ export class DeterminismController {
   freezeClock(recordedTimestamps: number[]): void {
     let index = 0;
     this.originalDateNow = Date.now;
-    Date.now = () => recordedTimestamps[index++] ?? this.originalDateNow!();
+    Date.now = () => recordedTimestamps[index++] ?? this.originalDateNow?.();
   }
 
   /**

@@ -1,13 +1,13 @@
 import {
+  InterceptorError,
   type LLMRequest,
   type LLMResponse,
-  type StreamChunk,
   type Message,
+  type StreamChunk,
   type ToolDefinition,
-  InterceptorError,
-} from '@reaatech/shared';
+} from '@reaatech/agent-replay-shared';
 
-import { LLMProviderAdapter } from './adapter.js';
+import type { LLMProviderAdapter } from './adapter.js';
 
 export interface OpenAIChatCompletionCreateParams {
   model: string;
@@ -88,10 +88,10 @@ export class OpenAIAdapter implements LLMProviderAdapter {
       throw new InterceptorError('openai', new Error('Request must have a messages array'));
     }
 
-    const messages: Message[] = req.messages.map(m => ({
+    const messages: Message[] = req.messages.map((m) => ({
       role: m.role,
       content: m.content ?? '',
-      toolCalls: m.tool_calls?.map(tc => ({
+      toolCalls: m.tool_calls?.map((tc) => ({
         id: tc.id,
         name: tc.function.name,
         arguments: JSON.parse(tc.function.arguments) as Record<string, unknown>,
@@ -99,7 +99,7 @@ export class OpenAIAdapter implements LLMProviderAdapter {
       toolCallId: m.tool_call_id,
     }));
 
-    const tools: ToolDefinition[] | undefined = req.tools?.map(t => ({
+    const tools: ToolDefinition[] | undefined = req.tools?.map((t) => ({
       name: t.function.name,
       description: t.function.description ?? '',
       parameters: t.function.parameters ?? {},
@@ -132,7 +132,7 @@ export class OpenAIAdapter implements LLMProviderAdapter {
       id: res.id,
       model: res.model,
       content: choice.message.content ?? '',
-      toolCalls: choice.message.tool_calls?.map(t => ({
+      toolCalls: choice.message.tool_calls?.map((t) => ({
         id: t.id,
         name: t.function.name,
         arguments: (() => {
@@ -173,17 +173,17 @@ export class OpenAIAdapter implements LLMProviderAdapter {
   denormalizeRequest(request: LLMRequest): unknown {
     return {
       model: request.model,
-      messages: request.messages.map(m => ({
+      messages: request.messages.map((m) => ({
         role: m.role,
         content: m.content,
-        tool_calls: m.toolCalls?.map(tc => ({
+        tool_calls: m.toolCalls?.map((tc) => ({
           id: tc.id,
           type: 'function' as const,
           function: { name: tc.name, arguments: JSON.stringify(tc.arguments) },
         })),
         tool_call_id: m.toolCallId,
       })),
-      tools: request.tools?.map(t => ({
+      tools: request.tools?.map((t) => ({
         type: 'function',
         function: {
           name: t.name,

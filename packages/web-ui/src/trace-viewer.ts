@@ -1,4 +1,4 @@
-import type { Trace } from '@reaatech/shared';
+import type { Trace } from '@reaatech/agent-replay-shared';
 
 export interface TraceViewerProps {
   trace: Trace;

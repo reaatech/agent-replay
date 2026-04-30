@@ -1,6 +1,6 @@
-import { describe, it, expect, afterEach } from 'vitest';
-import { ReplayFailedError } from '@reaatech/shared';
-import type { Trace, Span } from '@reaatech/shared';
+import { ReplayFailedError } from '@reaatech/agent-replay-shared';
+import type { Span, Trace } from '@reaatech/agent-replay-shared';
+import { afterEach, describe, expect, it } from 'vitest';
 
 import { PartialReplayOrchestrator } from '../partial-replay.js';
 
@@ -144,7 +144,7 @@ describe('PartialReplayOrchestrator', () => {
     const trace = createTestTrace();
     const progress: Array<{ percent: number; currentStep: number; totalSteps: number }> = [];
 
-    orchestrator.replaySlice(trace, 0, 2, p => progress.push(p));
+    orchestrator.replaySlice(trace, 0, 2, (p) => progress.push(p));
 
     expect(progress).toHaveLength(3);
     expect(progress[2].percent).toBe(100);
@@ -163,7 +163,7 @@ describe('PartialReplayOrchestrator', () => {
           outputs: spans.map(() => ({ content: 'live' })),
           duration: 100,
         });
-      }
+      },
     );
 
     // Should have stubbed output (step1) + live outputs

@@ -1,7 +1,7 @@
-import { InterceptorError } from '@reaatech/shared';
-import type { RecordingEngine } from '@reaatech/core';
+import type { RecordingEngine } from '@reaatech/agent-replay-core';
+import { InterceptorError } from '@reaatech/agent-replay-shared';
 
-import { LLMProviderAdapter } from './adapter.js';
+import type { LLMProviderAdapter } from './adapter.js';
 
 export type InterceptorInstallationPattern =
   | 'monkey-patch'
@@ -50,7 +50,7 @@ export abstract class BaseInterceptor {
       const result: Record<string, unknown> = {};
       for (const [key, value] of Object.entries(obj as Record<string, unknown>)) {
         const lower = key.toLowerCase();
-        if (sensitiveKeys.some(k => lower.includes(k))) {
+        if (sensitiveKeys.some((k) => lower.includes(k))) {
           result[key] = '[REDACTED]';
         } else {
           result[key] = redact(value);

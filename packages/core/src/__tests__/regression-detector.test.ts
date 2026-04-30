@@ -1,5 +1,5 @@
-import { describe, it, expect } from 'vitest';
-import type { Trace } from '@reaatech/shared';
+import type { Trace } from '@reaatech/agent-replay-shared';
+import { describe, expect, it } from 'vitest';
 
 import { RegressionDetector, formatRegressionReport } from '../regression-detector.js';
 
@@ -11,7 +11,7 @@ function createTrace(
     duration: number;
     llmCalls: number;
     toolCalls?: string[];
-  }
+  },
 ): Trace {
   const spans = [];
   for (let i = 0; i < config.llmCalls; i++) {
@@ -114,7 +114,7 @@ describe('RegressionDetector', () => {
     });
     const report = detector.detect(baseline, current);
 
-    expect(report.regressions.some(r => r.type === 'error_rate_increase')).toBe(true);
+    expect(report.regressions.some((r) => r.type === 'error_rate_increase')).toBe(true);
     expect(report.overallSeverity).toBe('critical');
   });
 
@@ -133,7 +133,7 @@ describe('RegressionDetector', () => {
     });
     const report = detector.detect(baseline, current);
 
-    expect(report.regressions.some(r => r.type === 'duration_increase')).toBe(true);
+    expect(report.regressions.some((r) => r.type === 'duration_increase')).toBe(true);
   });
 
   it('should detect LLM call count change', () => {
@@ -151,7 +151,7 @@ describe('RegressionDetector', () => {
     });
     const report = detector.detect(baseline, current);
 
-    expect(report.regressions.some(r => r.type === 'llm_call_count_change')).toBe(true);
+    expect(report.regressions.some((r) => r.type === 'llm_call_count_change')).toBe(true);
   });
 
   it('should detect tool call sequence change', () => {
@@ -171,7 +171,7 @@ describe('RegressionDetector', () => {
     });
     const report = detector.detect(baseline, current);
 
-    expect(report.regressions.some(r => r.type === 'tool_call_sequence_change')).toBe(true);
+    expect(report.regressions.some((r) => r.type === 'tool_call_sequence_change')).toBe(true);
   });
 
   it('should respect custom thresholds', () => {
@@ -190,7 +190,7 @@ describe('RegressionDetector', () => {
     });
     const report = strictDetector.detect(baseline, current);
 
-    expect(report.regressions.some(r => r.type === 'duration_increase')).toBe(true);
+    expect(report.regressions.some((r) => r.type === 'duration_increase')).toBe(true);
   });
 });
 

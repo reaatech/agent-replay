@@ -1,13 +1,13 @@
-import { describe, it, expect, vi } from 'vitest';
-import { RecordingEngine } from '@reaatech/core';
-import { InterceptorError } from '@reaatech/shared';
+import { RecordingEngine } from '@reaatech/agent-replay-core';
+import { InterceptorError } from '@reaatech/agent-replay-shared';
+import { describe, expect, it, vi } from 'vitest';
 
-import { OpenAIInterceptor } from '../openai-interceptor.js';
 import type {
   OpenAIChatCompletion,
   OpenAIChatCompletionChunk,
   OpenAIChatCompletionCreateParams,
 } from '../openai-adapter.js';
+import { OpenAIInterceptor } from '../openai-interceptor.js';
 
 function createMockClient() {
   return {
@@ -32,7 +32,7 @@ describe('OpenAIInterceptor', () => {
       await expect(interceptor.install({})).rejects.toThrow(InterceptorError);
       await expect(interceptor.install({ chat: {} })).rejects.toThrow(InterceptorError);
       await expect(interceptor.install({ chat: { completions: {} } })).rejects.toThrow(
-        InterceptorError
+        InterceptorError,
       );
     });
 
@@ -118,7 +118,7 @@ describe('OpenAIInterceptor', () => {
       };
 
       const stream = (await client.chat.completions.create(
-        request
+        request,
       )) as AsyncIterable<OpenAIChatCompletionChunk>;
       const received: OpenAIChatCompletionChunk[] = [];
       for await (const chunk of stream) {
@@ -191,7 +191,7 @@ describe('OpenAIInterceptor', () => {
       };
 
       const stream = (await client.chat.completions.create(
-        request
+        request,
       )) as AsyncIterable<OpenAIChatCompletionChunk>;
       const received: OpenAIChatCompletionChunk[] = [];
       for await (const chunk of stream) {
@@ -291,7 +291,7 @@ describe('OpenAIInterceptor', () => {
       };
 
       const stream = (await client.chat.completions.create(
-        request
+        request,
       )) as AsyncIterable<OpenAIChatCompletionChunk>;
       const received: OpenAIChatCompletionChunk[] = [];
       for await (const chunk of stream) {
@@ -300,8 +300,8 @@ describe('OpenAIInterceptor', () => {
 
       expect(received).toHaveLength(2);
       expect(session.trace.spans.length).toBeGreaterThan(0);
-      expect(session.trace.spans[0].events.some(e => e.name === 'openai-stream-response')).toBe(
-        true
+      expect(session.trace.spans[0].events.some((e) => e.name === 'openai-stream-response')).toBe(
+        true,
       );
 
       recorder.stopRecording(session);
@@ -333,9 +333,9 @@ describe('OpenAIInterceptor', () => {
 
       await client.chat.completions.create(request);
 
-      const requestEvent = session.trace.spans[0].events.find(e => e.type === 'request');
+      const requestEvent = session.trace.spans[0].events.find((e) => e.type === 'request');
       expect(requestEvent).toBeDefined();
-      expect((requestEvent!.data as Record<string, unknown>).apiKey).toBe('[REDACTED]');
+      expect((requestEvent?.data as Record<string, unknown>).apiKey).toBe('[REDACTED]');
 
       recorder.stopRecording(session);
     });

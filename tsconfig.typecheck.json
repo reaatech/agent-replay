@@ -1,0 +1,15 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@reaatech/agent-replay-shared": ["./packages/shared/src/index.ts"],
+      "@reaatech/agent-replay-core": ["./packages/core/src/index.ts"],
+      "@reaatech/agent-replay-interceptors": ["./packages/interceptors/src/index.ts"],
+      "@reaatech/agent-replay-cli": ["./packages/cli/src/index.ts"],
+      "@reaatech/agent-replay-integrations": ["./packages/integrations/src/index.ts"],
+      "@reaatech/agent-replay-web-ui": ["./packages/web-ui/src/index.ts"],
+      "@reaatech/agent-replay": ["./packages/agent-replay/src/index.ts"]
+    }
+  }
+}

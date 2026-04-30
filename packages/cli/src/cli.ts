@@ -3,11 +3,11 @@ import { createRequire } from 'node:module';
 
 import { Command } from 'commander';
 
+import { debugCommand } from './commands/debug.js';
+import { diffCommand } from './commands/diff.js';
+import { exploreCommand } from './commands/explore.js';
 import { recordCommand } from './commands/record.js';
 import { replayCommand } from './commands/replay.js';
-import { exploreCommand } from './commands/explore.js';
-import { diffCommand } from './commands/diff.js';
-import { debugCommand } from './commands/debug.js';
 
 const require = createRequire(import.meta.url);
 const { version } = require('../../package.json') as { version: string };

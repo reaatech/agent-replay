@@ -1,4 +1,4 @@
-import { type Trace, type Span } from '@reaatech/shared';
+import type { Span, Trace } from '@reaatech/agent-replay-shared';
 
 import { textSimilarity } from './text-similarity.js';
 
@@ -70,7 +70,7 @@ export class SemanticDiffEngine {
 
     const stepSimilarities: number[] = [];
     for (let i = 0; i < maxSteps; i++) {
-      const stepDiffs = differences.filter(d => d.step === i);
+      const stepDiffs = differences.filter((d) => d.step === i);
       if (stepDiffs.length === 0) {
         stepSimilarities.push(1);
       } else {
@@ -82,7 +82,7 @@ export class SemanticDiffEngine {
         ? stepSimilarities.reduce((a, b) => a + b, 0) / stepSimilarities.length
         : 1;
 
-    const severities = differences.map(d => d.severity);
+    const severities = differences.map((d) => d.severity);
     const maxSeverity = severities.includes('critical')
       ? 'critical'
       : severities.includes('high')
@@ -139,17 +139,17 @@ export class SemanticDiffEngine {
   private compareLLMOutputs(recorded: Span, replayed: Span, step: number): SemanticDifference[] {
     const diffs: SemanticDifference[] = [];
 
-    const recordedResponse = recorded.events.find(e => e.type === 'response')?.data as
+    const recordedResponse = recorded.events.find((e) => e.type === 'response')?.data as
       | { content?: string; toolCalls?: unknown[] }
       | undefined;
-    const replayedResponse = replayed.events.find(e => e.type === 'response')?.data as
+    const replayedResponse = replayed.events.find((e) => e.type === 'response')?.data as
       | { content?: string; toolCalls?: unknown[] }
       | undefined;
 
     // Compare text content
     const similarity = textSimilarity(
       recordedResponse?.content ?? '',
-      replayedResponse?.content ?? ''
+      replayedResponse?.content ?? '',
     );
 
     if (similarity < this.options.textSimilarityThreshold) {
@@ -174,7 +174,7 @@ export class SemanticDiffEngine {
         spanId: recorded.id,
         type: 'tool_call',
         severity: 'high',
-        message: `Tool calls in LLM response changed`,
+        message: 'Tool calls in LLM response changed',
         before: recordedToolCalls,
         after: replayedToolCalls,
         similarity: 0,
@@ -187,10 +187,10 @@ export class SemanticDiffEngine {
   private compareToolCalls(recorded: Span, replayed: Span, step: number): SemanticDifference[] {
     const diffs: SemanticDifference[] = [];
 
-    const recordedRequest = recorded.events.find(e => e.type === 'request')?.data as
+    const recordedRequest = recorded.events.find((e) => e.type === 'request')?.data as
       | { name?: string; arguments?: Record<string, unknown> }
       | undefined;
-    const replayedRequest = replayed.events.find(e => e.type === 'request')?.data as
+    const replayedRequest = replayed.events.find((e) => e.type === 'request')?.data as
       | { name?: string; arguments?: Record<string, unknown> }
       | undefined;
 
@@ -226,8 +226,8 @@ export class SemanticDiffEngine {
   private compareRouting(recorded: Span, replayed: Span, step: number): SemanticDifference[] {
     const diffs: SemanticDifference[] = [];
 
-    const recordedDecision = recorded.events.find(e => e.type === 'response')?.data;
-    const replayedDecision = replayed.events.find(e => e.type === 'response')?.data;
+    const recordedDecision = recorded.events.find((e) => e.type === 'response')?.data;
+    const replayedDecision = replayed.events.find((e) => e.type === 'response')?.data;
 
     if (JSON.stringify(recordedDecision) !== JSON.stringify(replayedDecision)) {
       diffs.push({
@@ -235,7 +235,7 @@ export class SemanticDiffEngine {
         spanId: recorded.id,
         type: 'routing',
         severity: 'medium',
-        message: `Routing decision changed`,
+        message: 'Routing decision changed',
         before: recordedDecision ?? null,
         after: replayedDecision ?? null,
         similarity: 0,
@@ -277,7 +277,7 @@ export class SemanticDiffEngine {
  */
 export function formatSemanticDiff(result: SemanticDiffResult): string {
   const lines = [
-    `Semantic Diff Report`,
+    'Semantic Diff Report',
     `  Overall similarity: ${(result.overallSimilarity * 100).toFixed(1)}%`,
     `  Max severity: ${result.maxSeverity}`,
     `  Differences: ${result.differences.length}`,
@@ -289,7 +289,7 @@ export function formatSemanticDiff(result: SemanticDiffResult): string {
       `[${diff.severity.toUpperCase()}] Step ${diff.step} (${diff.type})`,
       `  ${diff.message}`,
       `  Similarity: ${(diff.similarity * 100).toFixed(1)}%`,
-      ''
+      '',
     );
   }
 

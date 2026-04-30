@@ -61,13 +61,13 @@ pnpm test
 
 | Package                  | npm Scope               | Description                                          | Status      |
 | ------------------------ | ----------------------- | ---------------------------------------------------- | ----------- |
-| `@reaatech/shared`       | `packages/shared`       | Shared types, interfaces, and utilities              | In progress |
-| `@reaatech/core`         | `packages/core`         | Recording, replay, and diff engines                  | In progress |
-| `@reaatech/interceptors` | `packages/interceptors` | LLM provider interceptors (OpenAI, Anthropic)        | In progress |
+| `@reaatech/agent-replay-shared`       | `packages/shared`       | Shared types, interfaces, and utilities              | In progress |
+| `@reaatech/agent-replay-core`         | `packages/core`         | Recording, replay, and diff engines                  | In progress |
+| `@reaatech/agent-replay-interceptors` | `packages/interceptors` | LLM provider interceptors (OpenAI, Anthropic)        | In progress |
 | `@reaatech/agent-replay` | `packages/agent-replay` | Convenience package — re-exports core + interceptors | In progress |
-| `@reaatech/cli`          | `packages/cli`          | Command-line interface                               | Planned     |
-| `@reaatech/integrations` | `packages/integrations` | Framework integrations (LangChain, LangGraph)        | Planned     |
-| `@reaatech/web-ui`       | `packages/web-ui`       | Web-based trace viewer                               | Planned     |
+| `@reaatech/agent-replay-cli`          | `packages/cli`          | Command-line interface                               | Planned     |
+| `@reaatech/agent-replay-integrations` | `packages/integrations` | Framework integrations (LangChain, LangGraph)        | Planned     |
+| `@reaatech/agent-replay-web-ui`       | `packages/web-ui`       | Web-based trace viewer                               | Planned     |
 
 ## Architecture
 

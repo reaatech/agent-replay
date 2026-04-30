@@ -1,9 +1,9 @@
-import type { Trace } from '@reaatech/shared';
+import type { Trace } from '@reaatech/agent-replay-shared';
 
-import { RegressionDetector, formatRegressionReport } from './regression-detector.js';
-import { SemanticDiffEngine, formatSemanticDiff } from './semantic-diff.js';
 import { AnomalyDetector, formatAnomalyReport } from './anomaly-detector.js';
 import { DivergenceDetector } from './divergence-detector.js';
+import { RegressionDetector, formatRegressionReport } from './regression-detector.js';
+import { SemanticDiffEngine, formatSemanticDiff } from './semantic-diff.js';
 
 export interface CICDCheckConfig {
   /** Baseline trace to compare against */
@@ -69,7 +69,7 @@ export function runCICDCheck(current: Trace, config: CICDCheckConfig): CICDCheck
 
   if (config.minSimilarity !== undefined && semanticDiff.overallSimilarity < config.minSimilarity) {
     failures.push(
-      `Semantic similarity ${(semanticDiff.overallSimilarity * 100).toFixed(1)}% below threshold ${(config.minSimilarity * 100).toFixed(1)}%`
+      `Semantic similarity ${(semanticDiff.overallSimilarity * 100).toFixed(1)}% below threshold ${(config.minSimilarity * 100).toFixed(1)}%`,
     );
   }
 
@@ -83,8 +83,8 @@ export function runCICDCheck(current: Trace, config: CICDCheckConfig): CICDCheck
 
   // Divergence detection (treat current as a replay result)
   const currentOutputs = current.spans
-    .filter(s => s.kind === 'llm_call')
-    .map(s => s.events.find(e => e.type === 'response')?.data)
+    .filter((s) => s.kind === 'llm_call')
+    .map((s) => s.events.find((e) => e.type === 'response')?.data)
     .filter(Boolean);
 
   const divergenceDetector = new DivergenceDetector();
@@ -114,7 +114,7 @@ export function runCICDCheck(current: Trace, config: CICDCheckConfig): CICDCheck
       anomalyReport,
       divergence,
       failures,
-      config.labels
+      config.labels,
     ),
   };
 }
@@ -126,7 +126,7 @@ function formatCICDReport(
   anomalyReport: CICDCheckResult['anomalyReport'],
   divergence: CICDCheckResult['divergence'],
   failures: string[],
-  labels?: CICDCheckConfig['labels']
+  labels?: CICDCheckConfig['labels'],
 ): string {
   const lines = [
     '=== Agent Replay CI/CD Report ===',

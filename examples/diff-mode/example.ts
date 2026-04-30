@@ -1,10 +1,10 @@
 import {
-  SemanticDiffEngine,
   RegressionDetector,
-  formatSemanticDiff,
+  SemanticDiffEngine,
   formatRegressionReport,
-} from '@reaatech/core';
-import { LocalFileStorage } from '@reaatech/core';
+  formatSemanticDiff,
+} from '@reaatech/agent-replay-core';
+import { LocalFileStorage } from '@reaatech/agent-replay-core';
 
 async function main() {
   const storage = new LocalFileStorage();

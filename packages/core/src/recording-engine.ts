@@ -1,11 +1,11 @@
 import {
-  type Trace,
-  type RecordingConfig,
-  type Event,
-  type SpanKind,
   type CaptureContext,
+  type Event,
+  type RecordingConfig,
   RecordingFailedError,
-} from '@reaatech/shared';
+  type SpanKind,
+  type Trace,
+} from '@reaatech/agent-replay-shared';
 
 import { TraceBuilder } from './trace-builder.js';
 

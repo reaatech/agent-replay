@@ -1,7 +1,7 @@
-import { describe, it, expect, beforeEach } from 'vitest';
-import { RecordingFailedError } from '@reaatech/shared';
+import { RecordingFailedError } from '@reaatech/agent-replay-shared';
+import { beforeEach, describe, expect, it } from 'vitest';
 
-import { RecordingEngine } from '../recording-engine.js';
+import { RecordingEngine, type RecordingSession } from '../recording-engine.js';
 
 describe('RecordingEngine', () => {
   let engine: RecordingEngine;
@@ -34,10 +34,11 @@ describe('RecordingEngine', () => {
       engine.startRecording({
         name: 'second',
         outputPath: '/tmp/second.artrace.json',
-      })
+      }),
     ).toThrow(RecordingFailedError);
 
-    engine.stopRecording(engine['activeSession']!);
+    const active = (engine as unknown as { activeSession: RecordingSession }).activeSession;
+    engine.stopRecording(active);
   });
 
   it('should throw when stopping invalid session', () => {
@@ -71,7 +72,7 @@ describe('RecordingEngine', () => {
         attributes: { model: 'gpt-4' },
         data: { content: 'hello' },
       },
-      {}
+      {},
     );
 
     const trace = engine.stopRecording(session);
@@ -83,8 +84,8 @@ describe('RecordingEngine', () => {
     expect(() =>
       engine.captureEvent(
         { timestamp: Date.now(), type: 'response', name: 'x', attributes: {} },
-        {}
-      )
+        {},
+      ),
     ).toThrow(RecordingFailedError);
   });
 
@@ -104,7 +105,7 @@ describe('RecordingEngine', () => {
 
   it('should throw when creating checkpoint without recording', () => {
     expect(() =>
-      engine.createCheckpoint(null as unknown as ReturnType<typeof engine.startRecording>, {})
+      engine.createCheckpoint(null as unknown as ReturnType<typeof engine.startRecording>, {}),
     ).toThrow(RecordingFailedError);
   });
 
@@ -145,7 +146,7 @@ describe('RecordingEngine', () => {
     const session = engine.startRecording({ name: 'test' });
     session.captureEvent(
       { timestamp: Date.now(), type: 'response', name: 'resp', attributes: {}, data: {} },
-      { spanId: 's1' }
+      { spanId: 's1' },
     );
     expect(session.trace.spans).toHaveLength(0); // no in-progress span, so event is dropped
     engine.stopRecording(session);

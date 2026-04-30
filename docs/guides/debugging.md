@@ -16,7 +16,7 @@ agent-replay diff -b ./baseline.artrace.json -c ./current.artrace.json
 ## Using the ReplayDebugger
 
 ```typescript
-import { ReplayDebugger } from '@reaatech/core';
+import { ReplayDebugger } from '@reaatech/agent-replay-core';
 
 const dbg = new ReplayDebugger(trace);
 
@@ -45,7 +45,7 @@ while (await dbg.stepForward()) {
 When a bug appears after N steps:
 
 ```typescript
-import { PartialReplayOrchestrator } from '@reaatech/core';
+import { PartialReplayOrchestrator } from '@reaatech/agent-replay-core';
 
 const orchestrator = new PartialReplayOrchestrator();
 const result = await orchestrator.partialReplay(
@@ -75,7 +75,7 @@ if (divergence) {
 ### Annotating Traces for Team Review
 
 ```typescript
-import { AnnotationManager } from '@reaatech/core';
+import { AnnotationManager } from '@reaatech/agent-replay-core';
 
 const annotations = new AnnotationManager();
 annotations.add({
@@ -90,7 +90,7 @@ annotations.add({
 ### Automated CI/CD Checks
 
 ```typescript
-import { runCICDCheck } from '@reaatech/core';
+import { runCICDCheck } from '@reaatech/agent-replay-core';
 
 const result = runCICDCheck(currentTrace, {
   baseline,

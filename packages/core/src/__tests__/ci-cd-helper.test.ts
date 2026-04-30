@@ -1,13 +1,13 @@
-import { describe, it, expect } from 'vitest';
-import type { Trace } from '@reaatech/shared';
+import type { Trace } from '@reaatech/agent-replay-shared';
+import { describe, expect, it } from 'vitest';
 
 import { runCICDCheck } from '../ci-cd-helper.js';
 
 function createTrace(
   id: string,
-  spans: Array<{ name: string; kind: string; status?: string }>
+  spans: Array<{ name: string; kind: string; status?: string }>,
 ): Trace {
-  let time = 0;
+  const time = 0;
   return {
     version: '1.0.0',
     metadata: {
@@ -24,7 +24,7 @@ function createTrace(
       name: s.name,
       kind: s.kind as 'llm_call' | 'tool_call',
       startTime: time,
-      endTime: (time += 1000),
+      endTime: time + 1000,
       status: (s.status as 'ok' | 'error') ?? 'ok',
       events: [
         {
@@ -73,7 +73,7 @@ describe('runCICDCheck', () => {
 
     const result = runCICDCheck(current, { baseline, failOnRegression: true });
     expect(result.passed).toBe(false);
-    expect(result.failures.some(f => f.includes('regression'))).toBe(true);
+    expect(result.failures.some((f) => f.includes('regression'))).toBe(true);
   });
 
   it('should fail on low similarity when threshold set', () => {
@@ -84,7 +84,7 @@ describe('runCICDCheck', () => {
 
     const result = runCICDCheck(current, { baseline, minSimilarity: 0.99 });
     expect(result.passed).toBe(false);
-    expect(result.failures.some(f => f.includes('similarity'))).toBe(true);
+    expect(result.failures.some((f) => f.includes('similarity'))).toBe(true);
   });
 
   it('should fail on anomaly when enabled', () => {
@@ -96,7 +96,7 @@ describe('runCICDCheck', () => {
 
     const result = runCICDCheck(current, { baseline, failOnAnomaly: true });
     expect(result.passed).toBe(false);
-    expect(result.failures.some(f => f.includes('anomaly'))).toBe(true);
+    expect(result.failures.some((f) => f.includes('anomaly'))).toBe(true);
   });
 
   it('should fail on divergence when enabled', () => {
@@ -107,7 +107,7 @@ describe('runCICDCheck', () => {
 
     const result = runCICDCheck(current, { baseline, failOnDivergence: true });
     expect(result.passed).toBe(false);
-    expect(result.failures.some(f => f.includes('Divergence'))).toBe(true);
+    expect(result.failures.some((f) => f.includes('Divergence'))).toBe(true);
   });
 
   it('should include formatted report', () => {

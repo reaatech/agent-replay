@@ -1,4 +1,4 @@
-import type { Trace, Span, Event } from '@reaatech/shared';
+import type { Event, Span, Trace } from '@reaatech/agent-replay-shared';
 
 export interface TraceSummaryReport {
   /** High-level description of what the trace does */
@@ -48,9 +48,9 @@ export class TraceSummarizer {
   }
 
   private computeStats(trace: Trace): SummaryStats {
-    const llmCalls = trace.spans.filter(s => s.kind === 'llm_call');
-    const toolCalls = trace.spans.filter(s => s.kind === 'tool_call');
-    const errors = trace.spans.filter(s => s.status === 'error');
+    const llmCalls = trace.spans.filter((s) => s.kind === 'llm_call');
+    const toolCalls = trace.spans.filter((s) => s.kind === 'tool_call');
+    const errors = trace.spans.filter((s) => s.status === 'error');
 
     let totalTokens = 0;
     let totalResponseLength = 0;
@@ -92,7 +92,7 @@ export class TraceSummarizer {
         highlights.push({
           step: i,
           spanName: span.name,
-          description: `Error in ${span.kind}: ${String(span.events.find(e => e.type === 'error')?.data ?? 'unknown error')}`,
+          description: `Error in ${span.kind}: ${String(span.events.find((e) => e.type === 'error')?.data ?? 'unknown error')}`,
           importance: 'high',
         });
         continue;
@@ -100,7 +100,7 @@ export class TraceSummarizer {
 
       // Highlight tool calls with unusual names
       if (span.kind === 'tool_call') {
-        const req = span.events.find(e => e.type === 'request');
+        const req = span.events.find((e) => e.type === 'request');
         const toolName =
           req && typeof req.data === 'object' ? (req.data as { name?: string }).name : undefined;
         highlights.push({
@@ -144,7 +144,7 @@ export class TraceSummarizer {
       concerns.push('Unusual ratio of tool calls to LLM calls');
     }
 
-    const slowSpans = trace.spans.filter(s => {
+    const slowSpans = trace.spans.filter((s) => {
       const duration = (s.endTime ?? s.startTime) - s.startTime;
       return duration > 5000;
     });
@@ -170,7 +170,7 @@ export class TraceSummarizer {
   }
 
   private getResponseEvent(span: Span): Event | undefined {
-    return span.events.find(e => e.type === 'response');
+    return span.events.find((e) => e.type === 'response');
   }
 }
 
@@ -179,10 +179,10 @@ export class TraceSummarizer {
  */
 export function formatSummary(summary: TraceSummaryReport): string {
   const lines = [
-    `Trace Summary`,
+    'Trace Summary',
     `  ${summary.description}`,
     '',
-    `Statistics:`,
+    'Statistics:',
     `  Spans: ${summary.stats.spanCount}`,
     `  LLM calls: ${summary.stats.llmCallCount}`,
     `  Tool calls: ${summary.stats.toolCallCount}`,

@@ -1,13 +1,13 @@
-import { describe, it, expect } from 'vitest';
-import type { Trace } from '@reaatech/shared';
+import type { Trace } from '@reaatech/agent-replay-shared';
+import { describe, expect, it } from 'vitest';
 
 import { TraceComparator, formatComparison } from '../trace-comparison.js';
 
 function createTrace(
   id: string,
-  spans: Array<{ name: string; kind: string; status?: string; duration?: number }>
+  spans: Array<{ name: string; kind: string; status?: string; duration?: number }>,
 ): Trace {
-  let time = 0;
+  const time = 0;
   return {
     version: '1.0.0',
     metadata: {
@@ -29,7 +29,7 @@ function createTrace(
       name: s.name,
       kind: s.kind as 'llm_call' | 'tool_call' | 'agent_step',
       startTime: time,
-      endTime: (time += s.duration ?? 1000),
+      endTime: time + (s.duration ?? 1000),
       status: (s.status as 'ok' | 'error') ?? 'ok',
       events: [],
       attributes: {},
@@ -86,8 +86,8 @@ describe('TraceComparator', () => {
 
     const result = comparator.compare([t1, t2]);
     expect(result.uniqueSpans.get('t1')).toHaveLength(1);
-    expect(result.uniqueSpans.get('t1')![0].name).toBe('search');
-    expect(result.uniqueSpans.get('t2')![0].name).toBe('calc');
+    expect(result.uniqueSpans.get('t1')?.[0].name).toBe('search');
+    expect(result.uniqueSpans.get('t2')?.[0].name).toBe('calc');
   });
 
   it('should compute duration stats', () => {
@@ -119,7 +119,9 @@ describe('TraceComparator', () => {
     ]);
 
     const result = comparator.compare([t1]);
-    const dist = result.kindDistribution.get('t1')!;
+    const dist = result.kindDistribution.get('t1');
+    expect(dist).toBeDefined();
+    if (!dist) throw new Error('unreachable');
     expect(dist.get('llm_call')).toBe(2);
     expect(dist.get('tool_call')).toBe(1);
   });

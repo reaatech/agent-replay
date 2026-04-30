@@ -1,16 +1,16 @@
-import type { RecordingEngine } from '@reaatech/core';
+import type { RecordingEngine } from '@reaatech/agent-replay-core';
 import {
-  type RecordedStream,
-  type StreamChunk,
   type CaptureContext,
   InterceptorError,
-} from '@reaatech/shared';
+  type RecordedStream,
+  type StreamChunk,
+} from '@reaatech/agent-replay-shared';
 
 import {
   AnthropicAdapter,
   type AnthropicMessage,
-  type AnthropicMessageStreamEvent,
   type AnthropicMessageCreateParams,
+  type AnthropicMessageStreamEvent,
 } from './anthropic-adapter.js';
 import { BaseInterceptor, type InstallationResult } from './interceptor.js';
 
@@ -40,7 +40,7 @@ export class AnthropicInterceptor extends BaseInterceptor {
     if (!client.messages?.create) {
       throw new InterceptorError(
         'anthropic',
-        new Error('Target does not look like an Anthropic client')
+        new Error('Target does not look like an Anthropic client'),
       );
     }
 
@@ -64,16 +64,16 @@ export class AnthropicInterceptor extends BaseInterceptor {
             attributes: { provider: 'anthropic', model: normalizedRequest.model },
             data: redactedRequest,
           },
-          { spanId } as CaptureContext
+          { spanId } as CaptureContext,
         );
       }
 
-      const rawResponse = await this.originalCreate!.call(client.messages, ...args);
+      const rawResponse = await this.originalCreate?.call(client.messages, ...args);
 
       if (request.stream) {
         return this.handleStreamingResponse(
           rawResponse as AsyncIterable<AnthropicMessageStreamEvent>,
-          spanId
+          spanId,
         );
       }
 
@@ -87,7 +87,7 @@ export class AnthropicInterceptor extends BaseInterceptor {
             attributes: {},
             data: normalizedResponse,
           },
-          { spanId } as CaptureContext
+          { spanId } as CaptureContext,
         );
         this.recorder.endSpan(spanId);
       }
@@ -113,7 +113,7 @@ export class AnthropicInterceptor extends BaseInterceptor {
 
   private async *handleStreamingResponse(
     source: AsyncIterable<AnthropicMessageStreamEvent>,
-    spanId?: string
+    spanId?: string,
   ): AsyncGenerator<AnthropicMessageStreamEvent> {
     const chunks: StreamChunk[] = [];
     let content = '';
@@ -135,7 +135,7 @@ export class AnthropicInterceptor extends BaseInterceptor {
             attributes: { error: (error as Error).message },
             data: { message: (error as Error).message },
           },
-          { spanId } as CaptureContext
+          { spanId } as CaptureContext,
         );
         this.recorder.endSpan(spanId, 'error');
       }
@@ -158,7 +158,7 @@ export class AnthropicInterceptor extends BaseInterceptor {
           attributes: {},
           data: recordedStream,
         },
-        { spanId } as CaptureContext
+        { spanId } as CaptureContext,
       );
       this.recorder.endSpan(spanId);
     }

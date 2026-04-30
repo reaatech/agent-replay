@@ -21,7 +21,7 @@ To minimize overhead:
 Enable gzip compression for large traces:
 
 ```typescript
-import { LocalFileStorage } from '@reaatech/core';
+import { LocalFileStorage } from '@reaatech/agent-replay-core';
 const storage = new LocalFileStorage();
 await storage.save(trace, { compress: true });
 ```
@@ -33,7 +33,7 @@ Typical compression ratios: **5:1 to 20:1** depending on content redundancy.
 For traces with thousands of spans, use streaming deserialization:
 
 ```typescript
-import { TraceSerializer } from '@reaatech/core';
+import { TraceSerializer } from '@reaatech/agent-replay-core';
 const serializer = new TraceSerializer();
 
 for await (const item of serializer.streamDeserialize('huge-trace.artrace.json')) {

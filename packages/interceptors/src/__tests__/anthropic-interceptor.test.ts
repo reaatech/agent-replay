@@ -1,13 +1,13 @@
-import { describe, it, expect, vi } from 'vitest';
-import { RecordingEngine } from '@reaatech/core';
-import { InterceptorError } from '@reaatech/shared';
+import { RecordingEngine } from '@reaatech/agent-replay-core';
+import { InterceptorError } from '@reaatech/agent-replay-shared';
+import { describe, expect, it, vi } from 'vitest';
 
-import { AnthropicInterceptor } from '../anthropic-interceptor.js';
 import type {
   AnthropicMessage,
-  AnthropicMessageStreamEvent,
   AnthropicMessageCreateParams,
+  AnthropicMessageStreamEvent,
 } from '../anthropic-adapter.js';
+import { AnthropicInterceptor } from '../anthropic-interceptor.js';
 
 function createMockClient() {
   return {
@@ -99,7 +99,7 @@ describe('AnthropicInterceptor', () => {
       };
 
       const stream = (await client.messages.create(
-        request
+        request,
       )) as AsyncIterable<AnthropicMessageStreamEvent>;
       const received: AnthropicMessageStreamEvent[] = [];
       for await (const chunk of stream) {
@@ -170,7 +170,7 @@ describe('AnthropicInterceptor', () => {
       };
 
       const stream = (await client.messages.create(
-        request
+        request,
       )) as AsyncIterable<AnthropicMessageStreamEvent>;
       const received: AnthropicMessageStreamEvent[] = [];
       for await (const chunk of stream) {
@@ -179,9 +179,9 @@ describe('AnthropicInterceptor', () => {
 
       expect(received).toHaveLength(2);
       expect(session.trace.spans.length).toBeGreaterThan(0);
-      expect(session.trace.spans[0].events.some(e => e.name === 'anthropic-stream-response')).toBe(
-        true
-      );
+      expect(
+        session.trace.spans[0].events.some((e) => e.name === 'anthropic-stream-response'),
+      ).toBe(true);
 
       recorder.stopRecording(session);
     });

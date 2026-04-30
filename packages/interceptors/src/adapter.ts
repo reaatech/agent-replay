@@ -1,4 +1,4 @@
-import { type LLMRequest, type LLMResponse, type StreamChunk } from '@reaatech/shared';
+import type { LLMRequest, LLMResponse, StreamChunk } from '@reaatech/agent-replay-shared';
 
 export interface LLMProviderAdapter {
   readonly provider: string;

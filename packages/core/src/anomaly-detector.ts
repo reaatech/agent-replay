@@ -1,4 +1,4 @@
-import type { Trace } from '@reaatech/shared';
+import type { Trace } from '@reaatech/agent-replay-shared';
 
 export interface Anomaly {
   type: 'duration_spike' | 'error_burst' | 'pattern_break' | 'token_spike' | 'loop_detected';
@@ -90,7 +90,7 @@ export class AnomalyDetector {
 
     for (let i = 0; i <= trace.spans.length - window; i++) {
       const windowSpans = trace.spans.slice(i, i + window);
-      const errors = windowSpans.filter(s => s.status === 'error').length;
+      const errors = windowSpans.filter((s) => s.status === 'error').length;
 
       if (errors >= threshold) {
         anomalies.push({
@@ -141,7 +141,7 @@ export class AnomalyDetector {
       const span = trace.spans[i];
       if (span.kind !== 'llm_call') continue;
 
-      const resp = span.events.find(e => e.type === 'response');
+      const resp = span.events.find((e) => e.type === 'response');
       const data = resp?.data as { usage?: { total?: number } } | undefined;
       const tokens = data?.usage?.total ?? 0;
 
@@ -180,11 +180,11 @@ export class AnomalyDetector {
     for (let i = 0; i <= trace.spans.length - window * 2; i++) {
       const pattern1 = trace.spans
         .slice(i, i + window)
-        .map(s => s.kind)
+        .map((s) => s.kind)
         .join(',');
       const pattern2 = trace.spans
         .slice(i + window, i + window * 2)
-        .map(s => s.kind)
+        .map((s) => s.kind)
         .join(',');
 
       if (pattern1 === pattern2 && pattern1.split(',').length > 1) {
@@ -205,9 +205,9 @@ export class AnomalyDetector {
 
   private computeOverallSeverity(anomalies: Anomaly[]): AnomalyReport['severity'] {
     if (anomalies.length === 0) return 'none';
-    if (anomalies.some(a => a.severity === 'critical')) return 'critical';
-    if (anomalies.some(a => a.severity === 'high')) return 'high';
-    if (anomalies.some(a => a.severity === 'medium')) return 'medium';
+    if (anomalies.some((a) => a.severity === 'critical')) return 'critical';
+    if (anomalies.some((a) => a.severity === 'high')) return 'high';
+    if (anomalies.some((a) => a.severity === 'medium')) return 'medium';
     return 'low';
   }
 
@@ -245,7 +245,7 @@ export function formatAnomalyReport(report: AnomalyReport): string {
     lines.push(`[${anomaly.severity.toUpperCase()}] ${anomaly.type}`);
     lines.push(`  Step ${anomaly.step}: ${anomaly.message}`);
     lines.push(
-      `  Metric: ${anomaly.metric.name} = ${anomaly.metric.value} (threshold: ${anomaly.metric.threshold})`
+      `  Metric: ${anomaly.metric.name} = ${anomaly.metric.value} (threshold: ${anomaly.metric.threshold})`,
     );
     lines.push('');
   }

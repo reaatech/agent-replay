@@ -10,7 +10,7 @@ If you're starting work on this project for the first time:
 
 1. **Read the context**: Start with [DEV_PLAN.md](./DEV_PLAN.md) for the roadmap, then [ARCHITECTURE.md](./ARCHITECTURE.md) for technical design.
 2. **Check the skills**: Browse `skills/` for domain-specific guidance relevant to your task. These are reference docs, not auto-loaded code.
-3. **Understand the monorepo**: Packages live in `packages/` (not created yet). Shared types go in `@reaatech/shared`. The core engine is `@reaatech/core`.
+3. **Understand the monorepo**: Packages live in `packages/` (not created yet). Shared types go in `@reaatech/agent-replay-shared`. The core engine is `@reaatech/agent-replay-core`.
 4. **Follow conventions**: Use the file naming, code style, and test patterns defined in this doc and in `skills/typescript-development/`.
 5. **Plan before coding**: For non-trivial changes, enter plan mode, explore the codebase, and get approval before making edits.
 6. **Test first**: Write tests before implementation. Run `pnpm test` frequently. Coverage target is >90%.
@@ -42,14 +42,14 @@ All packages are published under the `@reaatech/` scope:
 | Package                  | Path                    | Description                                  |
 | ------------------------ | ----------------------- | -------------------------------------------- |
 | `@reaatech/agent-replay` | `packages/core`         | Main package, re-exports core + interceptors |
-| `@reaatech/core`         | `packages/core`         | Recording/replay engine                      |
-| `@reaatech/interceptors` | `packages/interceptors` | LLM provider interceptors                    |
-| `@reaatech/cli`          | `packages/cli`          | Command-line interface                       |
-| `@reaatech/web-ui`       | `packages/web-ui`       | Web-based trace viewer                       |
-| `@reaatech/integrations` | `packages/integrations` | Framework integrations                       |
-| `@reaatech/shared`       | `packages/shared`       | Shared types and utilities                   |
+| `@reaatech/agent-replay-core`         | `packages/core`         | Recording/replay engine                      |
+| `@reaatech/agent-replay-interceptors` | `packages/interceptors` | LLM provider interceptors                    |
+| `@reaatech/agent-replay-cli`          | `packages/cli`          | Command-line interface                       |
+| `@reaatech/agent-replay-web-ui`       | `packages/web-ui`       | Web-based trace viewer                       |
+| `@reaatech/agent-replay-integrations` | `packages/integrations` | Framework integrations                       |
+| `@reaatech/agent-replay-shared`       | `packages/shared`       | Shared types and utilities                   |
 
-Internal code should use workspace-relative imports (e.g., `@reaatech/shared`). External consumers import `@reaatech/agent-replay`.
+Internal code should use workspace-relative imports (e.g., `@reaatech/agent-replay-shared`). External consumers import `@reaatech/agent-replay`.
 
 ### Repository Structure
 
@@ -184,7 +184,7 @@ The `skills/` directory contains reference documentation for specific capabiliti
 
 ```
 src/
-├── types/           # Domain type definitions (not shared — those go in @reaatech/shared)
+├── types/           # Domain type definitions (not shared — those go in @reaatech/agent-replay-shared)
 ├── interfaces/      # Interface definitions for external contracts
 ├── utils/           # Pure utility functions
 ├── services/        # Business logic and orchestration

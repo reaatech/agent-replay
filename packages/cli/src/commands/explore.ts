@@ -1,6 +1,6 @@
+import { LocalFileStorage } from '@reaatech/agent-replay-core';
+import type { Checkpoint, Span } from '@reaatech/agent-replay-shared';
 import { Command } from 'commander';
-import { LocalFileStorage } from '@reaatech/core';
-import type { Span, Checkpoint } from '@reaatech/shared';
 
 export interface ExploreOptions {
   trace: string;
@@ -47,10 +47,10 @@ function printTable(spans: Span[], checkpoints: Checkpoint[]): void {
   for (let i = 0; i < spans.length; i++) {
     const span = spans[i];
     const duration = span.endTime ? span.endTime - span.startTime : '-';
-    const cpIndicator = checkpoints.some(cp => cp.spanId === span.id) ? ' [CP]' : '';
+    const cpIndicator = checkpoints.some((cp) => cp.spanId === span.id) ? ' [CP]' : '';
 
     console.log(
-      `  ${String(i + 1).padStart(2)} ${span.kind.padEnd(15)} ${span.name.padEnd(19)} ${span.status.padEnd(7)} ${String(span.startTime).padStart(10)} ${String(duration).padStart(8)}${cpIndicator}`
+      `  ${String(i + 1).padStart(2)} ${span.kind.padEnd(15)} ${span.name.padEnd(19)} ${span.status.padEnd(7)} ${String(span.startTime).padStart(10)} ${String(duration).padStart(8)}${cpIndicator}`,
     );
   }
 
@@ -66,7 +66,7 @@ function printTable(spans: Span[], checkpoints: Checkpoint[]): void {
 }
 
 function printTree(spans: Span[], checkpoints: Checkpoint[]): void {
-  const roots = spans.filter(s => !s.parentId);
+  const roots = spans.filter((s) => !s.parentId);
 
   for (const root of roots) {
     printSpanNode(root, spans, checkpoints, 0);
@@ -77,13 +77,13 @@ function printSpanNode(
   span: Span,
   allSpans: Span[],
   checkpoints: Checkpoint[],
-  depth: number
+  depth: number,
 ): void {
   const indent = '  '.repeat(depth);
-  const cpIndicator = checkpoints.some(cp => cp.spanId === span.id) ? ' [CP]' : '';
+  const cpIndicator = checkpoints.some((cp) => cp.spanId === span.id) ? ' [CP]' : '';
   console.log(`${indent}${span.kind}: ${span.name}${cpIndicator}`);
 
-  const children = allSpans.filter(s => s.parentId === span.id);
+  const children = allSpans.filter((s) => s.parentId === span.id);
   for (const child of children) {
     printSpanNode(child, allSpans, checkpoints, depth + 1);
   }

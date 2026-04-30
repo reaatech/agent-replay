@@ -1,6 +1,11 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { ReplayFailedError } from '@reaatech/shared';
-import type { Trace, Checkpoint, PartialReplayConfig, DiffReplayConfig } from '@reaatech/shared';
+import { ReplayFailedError } from '@reaatech/agent-replay-shared';
+import type {
+  Checkpoint,
+  DiffReplayConfig,
+  PartialReplayConfig,
+  Trace,
+} from '@reaatech/agent-replay-shared';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { ReplayEngine } from '../replay-engine.js';
 
@@ -290,7 +295,7 @@ describe('ReplayEngine', () => {
 
       engine.replay(trace, {
         mode: 'stubbed',
-        onProgress: p => progress.push(p),
+        onProgress: (p) => progress.push(p),
       });
 
       expect(progress).toHaveLength(3);
@@ -332,7 +337,7 @@ describe('ReplayEngine', () => {
         engine.replay(trace, {
           mode: 'partial',
           checkpointId: 'missing',
-        } as PartialReplayConfig)
+        } as PartialReplayConfig),
       ).toThrow(ReplayFailedError);
     });
 
@@ -343,7 +348,7 @@ describe('ReplayEngine', () => {
       engine.replay(trace, {
         mode: 'partial',
         checkpointId: 'cp-1',
-        onProgress: p => progress.push(p),
+        onProgress: (p) => progress.push(p),
       } as PartialReplayConfig);
 
       // partialReplay calls stubbedReplay then liveReplay, each reporting progress
@@ -355,14 +360,14 @@ describe('ReplayEngine', () => {
     it('should throw without interceptors installed in diff mode', () => {
       const trace = createTestTrace();
       expect(() => engine.replay(trace, { mode: 'diff' } as DiffReplayConfig)).toThrow(
-        ReplayFailedError
+        ReplayFailedError,
       );
     });
 
     it('should throw for empty trace without interceptors in diff mode', () => {
       const trace = createEmptyTrace();
       expect(() => engine.replay(trace, { mode: 'diff' } as DiffReplayConfig)).toThrow(
-        ReplayFailedError
+        ReplayFailedError,
       );
     });
   });
@@ -371,14 +376,14 @@ describe('ReplayEngine', () => {
     it('should throw on unknown replay mode', () => {
       const trace = createTestTrace();
       expect(() => engine.replay(trace, { mode: 'unknown' as 'stubbed' })).toThrow(
-        ReplayFailedError
+        ReplayFailedError,
       );
     });
 
     it('should throw ReplayFailedError with correct message for unknown mode', () => {
       const trace = createTestTrace();
       expect(() => engine.replay(trace, { mode: 'magic' as 'stubbed' })).toThrow(
-        'Unknown replay mode: magic'
+        'Unknown replay mode: magic',
       );
     });
 

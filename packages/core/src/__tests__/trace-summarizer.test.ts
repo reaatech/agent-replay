@@ -1,5 +1,5 @@
-import { describe, it, expect } from 'vitest';
-import type { Trace } from '@reaatech/shared';
+import type { Trace } from '@reaatech/agent-replay-shared';
+import { describe, expect, it } from 'vitest';
 
 import { TraceSummarizer, formatSummary } from '../trace-summarizer.js';
 
@@ -9,9 +9,9 @@ function createTrace(
     kind: string;
     status?: string;
     events?: Array<{ type: string; data?: unknown }>;
-  }>
+  }>,
 ): Trace {
-  let time = 0;
+  const time = 0;
   return {
     version: '1.0.0',
     metadata: {
@@ -28,7 +28,7 @@ function createTrace(
       name: s.name,
       kind: s.kind as 'llm_call' | 'tool_call' | 'error',
       startTime: time,
-      endTime: (time += 1000),
+      endTime: time + 1000,
       status: (s.status as 'ok' | 'error') ?? 'ok',
       events: (s.events ?? []).map((e, j) => ({
         timestamp: time + j,
@@ -94,7 +94,7 @@ describe('TraceSummarizer', () => {
     const summary = summarizer.summarize(trace);
     expect(summary.stats.errorCount).toBe(1);
     expect(summary.concerns.length).toBeGreaterThan(0);
-    expect(summary.highlights.some(h => h.importance === 'high')).toBe(true);
+    expect(summary.highlights.some((h) => h.importance === 'high')).toBe(true);
   });
 
   it('should highlight tool calls', () => {
@@ -107,7 +107,7 @@ describe('TraceSummarizer', () => {
     ]);
 
     const summary = summarizer.summarize(trace);
-    expect(summary.highlights.some(h => h.description.includes('Tool execution'))).toBe(true);
+    expect(summary.highlights.some((h) => h.description.includes('Tool execution'))).toBe(true);
   });
 
   it('should highlight LLM tool call requests', () => {
@@ -125,7 +125,7 @@ describe('TraceSummarizer', () => {
     ]);
 
     const summary = summarizer.summarize(trace);
-    expect(summary.highlights.some(h => h.description.includes('tool call'))).toBe(true);
+    expect(summary.highlights.some((h) => h.description.includes('tool call'))).toBe(true);
   });
 
   it('should flag high LLM call count', () => {
@@ -137,7 +137,7 @@ describe('TraceSummarizer', () => {
     const trace = createTrace(spans);
 
     const summary = summarizer.summarize(trace);
-    expect(summary.concerns.some(c => c.includes('High number of LLM calls'))).toBe(true);
+    expect(summary.concerns.some((c) => c.includes('High number of LLM calls'))).toBe(true);
   });
 
   it('should flag slow spans', () => {
@@ -152,7 +152,7 @@ describe('TraceSummarizer', () => {
     trace.spans[0].endTime = trace.spans[0].startTime + 6000;
 
     const summary = summarizer.summarize(trace);
-    expect(summary.concerns.some(c => c.includes('longer than 5 seconds'))).toBe(true);
+    expect(summary.concerns.some((c) => c.includes('longer than 5 seconds'))).toBe(true);
   });
 
   it('should format summary', () => {
