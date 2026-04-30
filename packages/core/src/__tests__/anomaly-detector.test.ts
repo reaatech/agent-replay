@@ -1,5 +1,5 @@
-import { describe, it, expect } from 'vitest';
-import type { Trace } from '@reaatech/shared';
+import type { Trace } from '@reaatech/agent-replay-shared';
+import { describe, expect, it } from 'vitest';
 
 import { AnomalyDetector, formatAnomalyReport } from '../anomaly-detector.js';
 
@@ -11,7 +11,7 @@ function createTrace(
     startTime?: number;
     endTime?: number;
     events?: Array<{ type: string; data?: unknown }>;
-  }>
+  }>,
 ): Trace {
   return {
     version: '1.0.0',
@@ -74,7 +74,7 @@ describe('AnomalyDetector', () => {
     const trace = createTrace([{ name: 'slow', kind: 'llm_call', startTime: 0, endTime: 6000 }]);
 
     const report = detector.detect(trace);
-    expect(report.anomalies.some(a => a.type === 'duration_spike')).toBe(true);
+    expect(report.anomalies.some((a) => a.type === 'duration_spike')).toBe(true);
   });
 
   it('should detect high severity for very slow spans', () => {
@@ -83,7 +83,7 @@ describe('AnomalyDetector', () => {
     ]);
 
     const report = detector.detect(trace);
-    const spike = report.anomalies.find(a => a.type === 'duration_spike');
+    const spike = report.anomalies.find((a) => a.type === 'duration_spike');
     expect(spike?.severity).toBe('high');
   });
 
@@ -97,7 +97,7 @@ describe('AnomalyDetector', () => {
     ]);
 
     const report = detector.detect(trace);
-    expect(report.anomalies.some(a => a.type === 'error_burst')).toBe(true);
+    expect(report.anomalies.some((a) => a.type === 'error_burst')).toBe(true);
   });
 
   it('should detect pattern breaks', () => {
@@ -108,7 +108,7 @@ describe('AnomalyDetector', () => {
     ]);
 
     const report = detector.detect(trace);
-    expect(report.anomalies.some(a => a.type === 'pattern_break')).toBe(true);
+    expect(report.anomalies.some((a) => a.type === 'pattern_break')).toBe(true);
   });
 
   it('should detect token spikes', () => {
@@ -141,7 +141,7 @@ describe('AnomalyDetector', () => {
     ]);
 
     const report = detector.detect(trace);
-    expect(report.anomalies.some(a => a.type === 'token_spike')).toBe(true);
+    expect(report.anomalies.some((a) => a.type === 'token_spike')).toBe(true);
   });
 
   it('should detect loops', () => {
@@ -152,7 +152,7 @@ describe('AnomalyDetector', () => {
     const trace = createTrace(spans);
 
     const report = detector.detect(trace);
-    expect(report.anomalies.some(a => a.type === 'loop_detected')).toBe(true);
+    expect(report.anomalies.some((a) => a.type === 'loop_detected')).toBe(true);
   });
 
   it('should compute overall severity', () => {

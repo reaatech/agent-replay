@@ -1,4 +1,4 @@
-import type { Trace, Span, SpanKind, Event, SerializedState } from '@reaatech/shared';
+import type { Event, SerializedState, Span, SpanKind, Trace } from '@reaatech/agent-replay-shared';
 
 /** Condition that determines when a breakpoint should trigger. */
 export interface BreakpointCondition {
@@ -71,7 +71,7 @@ export class ReplayDebugger {
   private session: DebugSession;
   private onBreakpointHit?: (
     hit: DebugSession['hitBreakpoints'][number],
-    session: DebugSession
+    session: DebugSession,
   ) => Promise<boolean> | boolean;
   private onStep?: (snapshot: DebugSnapshot, session: DebugSession) => void;
 
@@ -100,12 +100,12 @@ export class ReplayDebugger {
 
   /** Remove a breakpoint by ID. */
   removeBreakpoint(id: string): void {
-    this.session.breakpoints = this.session.breakpoints.filter(bp => bp.id !== id);
+    this.session.breakpoints = this.session.breakpoints.filter((bp) => bp.id !== id);
   }
 
   /** Toggle breakpoint enabled state. */
   toggleBreakpoint(id: string): void {
-    const bp = this.session.breakpoints.find(b => b.id === id);
+    const bp = this.session.breakpoints.find((b) => b.id === id);
     if (bp) bp.enabled = !bp.enabled;
   }
 
@@ -122,15 +122,15 @@ export class ReplayDebugger {
 
   /** Remove a watchpoint by ID. */
   removeWatchpoint(id: string): void {
-    this.session.watchpoints = this.session.watchpoints.filter(wp => wp.id !== id);
+    this.session.watchpoints = this.session.watchpoints.filter((wp) => wp.id !== id);
   }
 
   /** Set callback invoked when a breakpoint is hit. Return false to continue. */
   setBreakpointHandler(
     handler: (
       hit: DebugSession['hitBreakpoints'][number],
-      session: DebugSession
-    ) => Promise<boolean> | boolean
+      session: DebugSession,
+    ) => Promise<boolean> | boolean,
   ): void {
     this.onBreakpointHit = handler;
   }
@@ -225,9 +225,9 @@ export class ReplayDebugger {
 
   /** Jump to the checkpoint nearest to a step. */
   goToCheckpoint(checkpointId: string): DebugSnapshot | null {
-    const cp = this.session.trace.checkpoints.find(c => c.id === checkpointId);
+    const cp = this.session.trace.checkpoints.find((c) => c.id === checkpointId);
     if (!cp) return null;
-    const spanIndex = this.session.trace.spans.findIndex(s => s.id === cp.spanId);
+    const spanIndex = this.session.trace.spans.findIndex((s) => s.id === cp.spanId);
     if (spanIndex === -1) return null;
     return this.goToStep(spanIndex);
   }
@@ -259,8 +259,8 @@ export class ReplayDebugger {
   /** Evaluate all watch expressions across the trace history. */
   evaluateWatchpoints(): WatchResult[] {
     return this.session.watchpoints
-      .filter(wp => wp.enabled)
-      .map(wp => {
+      .filter((wp) => wp.enabled)
+      .map((wp) => {
         const values: WatchValue[] = this.session.history.map((snap, i) => ({
           step: i,
           spanId: snap.span.id,
@@ -309,7 +309,7 @@ export class ReplayDebugger {
   }
 
   private createSnapshot(step: number, span: Span): DebugSnapshot {
-    const checkpoint = this.session.trace.checkpoints.find(c => c.spanId === span.id);
+    const checkpoint = this.session.trace.checkpoints.find((c) => c.spanId === span.id);
     return {
       step,
       span,
@@ -326,7 +326,7 @@ export class ReplayDebugger {
   }
 
   private detectChanges(
-    values: WatchValue[]
+    values: WatchValue[],
   ): Array<{ from: number; to: number; before: unknown; after: unknown }> {
     const changes: Array<{ from: number; to: number; before: unknown; after: unknown }> = [];
     for (let i = 1; i < values.length; i++) {
@@ -350,7 +350,7 @@ export function formatDebugSession(session: DebugSession): string {
   const lines = [
     `Debug Session: ${session.trace.metadata.name}`,
     `  Current step: ${session.currentStep + 1} / ${session.trace.spans.length}`,
-    `  Breakpoints: ${session.breakpoints.length} (${session.breakpoints.filter(b => b.enabled).length} enabled)`,
+    `  Breakpoints: ${session.breakpoints.length} (${session.breakpoints.filter((b) => b.enabled).length} enabled)`,
     `  Watchpoints: ${session.watchpoints.length}`,
     `  Breakpoint hits: ${session.hitBreakpoints.length}`,
     '',

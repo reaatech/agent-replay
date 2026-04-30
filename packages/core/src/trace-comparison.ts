@@ -1,4 +1,4 @@
-import type { Trace, Span } from '@reaatech/shared';
+import type { Span, Trace } from '@reaatech/agent-replay-shared';
 
 export interface TraceComparisonResult {
   /** Number of traces compared */
@@ -64,7 +64,7 @@ export class TraceComparator {
     if (traces.length === 0) return [];
 
     const spanSignatures = traces.map(
-      trace => new Set(trace.spans.map(s => `${s.name}:${s.kind}`))
+      (trace) => new Set(trace.spans.map((s) => `${s.name}:${s.kind}`)),
     );
 
     const common = new Set(spanSignatures[0]);
@@ -77,7 +77,7 @@ export class TraceComparator {
     }
 
     // Return representative spans from the first trace
-    return traces[0].spans.filter(s => common.has(`${s.name}:${s.kind}`));
+    return traces[0].spans.filter((s) => common.has(`${s.name}:${s.kind}`));
   }
 
   /** Find spans unique to each trace. */
@@ -91,13 +91,13 @@ export class TraceComparator {
         if (!allSignatures.has(sig)) {
           allSignatures.set(sig, new Set());
         }
-        allSignatures.get(sig)!.add(i);
+        allSignatures.get(sig)?.add(i);
       }
     }
 
     for (let i = 0; i < traces.length; i++) {
       const unique = traces[i].spans.filter(
-        s => allSignatures.get(`${s.name}:${s.kind}`)!.size === 1
+        (s) => allSignatures.get(`${s.name}:${s.kind}`)?.size === 1,
       );
       result.set(traces[i].metadata.id, unique);
     }
@@ -107,7 +107,7 @@ export class TraceComparator {
 
   /** Compute duration statistics across traces. */
   private computeDurationStats(traces: Trace[]): DurationStats {
-    const durations = traces.map(t => t.metadata.summary.duration);
+    const durations = traces.map((t) => t.metadata.summary.duration);
     const sorted = [...durations].sort((a, b) => a - b);
     const mean = durations.reduce((a, b) => a + b, 0) / durations.length;
     const median =
@@ -116,8 +116,7 @@ export class TraceComparator {
         : sorted[Math.floor(sorted.length / 2)];
     const min = sorted[0];
     const max = sorted[sorted.length - 1];
-    const variance =
-      durations.reduce((sum, d) => sum + Math.pow(d - mean, 2), 0) / durations.length;
+    const variance = durations.reduce((sum, d) => sum + (d - mean) ** 2, 0) / durations.length;
     const stdDev = Math.sqrt(variance);
 
     return { mean, median, min, max, stdDev };
@@ -127,7 +126,7 @@ export class TraceComparator {
   private computeErrorRates(traces: Trace[]): Map<string, number> {
     const result = new Map<string, number>();
     for (const trace of traces) {
-      const errors = trace.spans.filter(s => s.status === 'error').length;
+      const errors = trace.spans.filter((s) => s.status === 'error').length;
       const rate = trace.spans.length > 0 ? errors / trace.spans.length : 0;
       result.set(trace.metadata.id, rate);
     }
@@ -153,18 +152,18 @@ export class TraceComparator {
  */
 export function formatComparison(result: TraceComparisonResult): string {
   const lines = [
-    `Trace Comparison Report`,
+    'Trace Comparison Report',
     `  Traces compared: ${result.traceCount}`,
     `  Common spans: ${result.commonSpans.length}`,
     '',
-    `Duration Statistics:`,
+    'Duration Statistics:',
     `  Mean: ${result.durationStats.mean.toFixed(0)}ms`,
     `  Median: ${result.durationStats.median.toFixed(0)}ms`,
     `  Min: ${result.durationStats.min.toFixed(0)}ms`,
     `  Max: ${result.durationStats.max.toFixed(0)}ms`,
     `  StdDev: ${result.durationStats.stdDev.toFixed(0)}ms`,
     '',
-    `Error Rates:`,
+    'Error Rates:',
   ];
 
   for (const [traceId, rate] of result.errorRates) {

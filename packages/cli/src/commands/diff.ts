@@ -1,11 +1,11 @@
-import { Command } from 'commander';
 import {
   LocalFileStorage,
-  SemanticDiffEngine,
-  formatSemanticDiff,
   RegressionDetector,
+  SemanticDiffEngine,
   formatRegressionReport,
-} from '@reaatech/core';
+  formatSemanticDiff,
+} from '@reaatech/agent-replay-core';
+import { Command } from 'commander';
 
 export interface DiffOptions {
   baseline: string;
@@ -29,7 +29,7 @@ export async function diff(options: DiffOptions): Promise<void> {
 
     // Run semantic diff
     const similarity = Number(options.similarity);
-    if (isNaN(similarity) || similarity < 0 || similarity > 1) {
+    if (Number.isNaN(similarity) || similarity < 0 || similarity > 1) {
       console.error('Error: Similarity must be a number between 0 and 1');
       process.exit(1);
     }
@@ -51,8 +51,8 @@ export async function diff(options: DiffOptions): Promise<void> {
             regression: regressionReport,
           },
           null,
-          2
-        )
+          2,
+        ),
       );
       return;
     }

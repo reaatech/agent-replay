@@ -1,11 +1,11 @@
-import { describe, it, expect } from 'vitest';
-import type { Trace, ReplayResult } from '@reaatech/shared';
+import type { ReplayResult, Trace } from '@reaatech/agent-replay-shared';
+import { describe, expect, it } from 'vitest';
 
 import { DivergenceDetector } from '../divergence-detector.js';
 
 function createTrace(
   id: string,
-  spans: Array<{ kind: string; content?: string; tool?: string }>
+  spans: Array<{ kind: string; content?: string; tool?: string }>,
 ): Trace {
   return {
     version: '1.0.0',
@@ -89,24 +89,24 @@ describe('DivergenceDetector', () => {
       createTrace('live', [
         { kind: 'llm_call', content: 'Hello' },
         { kind: 'llm_call', content: 'World' },
-      ])
+      ]),
     );
 
     const result = detector.detect(baseline, live);
     expect(result).not.toBeNull();
-    expect(result!.spanDivergences.some(d => d.spanId === 'meta')).toBe(true);
+    expect(result?.spanDivergences.some((d) => d.spanId === 'meta')).toBe(true);
   });
 
   it('should detect LLM output divergence', () => {
     const baseline = createTrace('base', [{ kind: 'llm_call', content: 'Hello world' }]);
     const live = createReplayResult(
-      createTrace('live', [{ kind: 'llm_call', content: 'Goodbye world' }])
+      createTrace('live', [{ kind: 'llm_call', content: 'Goodbye world' }]),
     );
 
     const result = detector.detect(baseline, live);
     expect(result).not.toBeNull();
-    expect(result!.spanDivergences[0].severity).toBe('critical');
-    expect(result!.similarity).toBeLessThan(1);
+    expect(result?.spanDivergences[0].severity).toBe('critical');
+    expect(result?.similarity).toBeLessThan(1);
   });
 
   it('should detect kind mismatch as critical', () => {
@@ -115,18 +115,18 @@ describe('DivergenceDetector', () => {
 
     const result = detector.detect(baseline, live);
     expect(result).not.toBeNull();
-    expect(result!.spanDivergences[0].severity).toBe('critical');
+    expect(result?.spanDivergences[0].severity).toBe('critical');
   });
 
   it('should detect tool call changes', () => {
     const baseline = createTrace('base', [{ kind: 'tool_call', tool: 'search' }]);
     const live = createReplayResult(
-      createTrace('live', [{ kind: 'tool_call', tool: 'calculator' }])
+      createTrace('live', [{ kind: 'tool_call', tool: 'calculator' }]),
     );
 
     const result = detector.detect(baseline, live, { strictToolCallOrder: true });
     expect(result).not.toBeNull();
-    expect(result!.spanDivergences[0].severity).toBe('high');
+    expect(result?.spanDivergences[0].severity).toBe('high');
   });
 
   it('should respect configurable thresholds', () => {
@@ -134,7 +134,7 @@ describe('DivergenceDetector', () => {
       { kind: 'llm_call', content: 'Hello world how are you' },
     ]);
     const live = createReplayResult(
-      createTrace('live', [{ kind: 'llm_call', content: 'Hello world' }])
+      createTrace('live', [{ kind: 'llm_call', content: 'Hello world' }]),
     );
 
     // With high threshold, small changes are ignored
@@ -170,7 +170,7 @@ describe('DivergenceDetector', () => {
 
     const result = detector.detect(baseline, live, { strictRouting: true });
     expect(result).not.toBeNull();
-    expect(result!.spanDivergences[0].severity).toBe('medium');
+    expect(result?.spanDivergences[0].severity).toBe('medium');
   });
 
   it('should handle empty recorded trace', () => {
@@ -179,7 +179,7 @@ describe('DivergenceDetector', () => {
 
     const result = detector.detect(baseline, live);
     expect(result).not.toBeNull();
-    expect(result!.spanDivergences.length).toBeGreaterThan(0);
+    expect(result?.spanDivergences.length).toBeGreaterThan(0);
   });
 
   it('should classify very low similarity as critical', () => {
@@ -187,12 +187,12 @@ describe('DivergenceDetector', () => {
       { kind: 'llm_call', content: 'completely different text here' },
     ]);
     const live = createReplayResult(
-      createTrace('live', [{ kind: 'llm_call', content: 'xyz abc def ghi' }])
+      createTrace('live', [{ kind: 'llm_call', content: 'xyz abc def ghi' }]),
     );
 
     const result = detector.detect(baseline, live, { minOutputSimilarity: 0.6 });
     expect(result).not.toBeNull();
-    expect(result!.spanDivergences[0].severity).toBe('critical');
+    expect(result?.spanDivergences[0].severity).toBe('critical');
   });
 
   it('should handle missing tool names', () => {
@@ -201,7 +201,7 @@ describe('DivergenceDetector', () => {
 
     const result = detector.detect(baseline, live, { strictToolCallOrder: true });
     expect(result).not.toBeNull();
-    expect(result!.spanDivergences[0].details).toContain('none');
+    expect(result?.spanDivergences[0].details).toContain('none');
   });
 
   it('should handle LLM spans without response content', () => {
@@ -213,7 +213,7 @@ describe('DivergenceDetector', () => {
 
     const result = detector.detect(baseline, live);
     expect(result).not.toBeNull();
-    expect(result!.spanDivergences[0].severity).toBe('critical');
+    expect(result?.spanDivergences[0].severity).toBe('critical');
   });
 
   it('should handle empty text similarity', () => {

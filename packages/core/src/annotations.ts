@@ -1,4 +1,4 @@
-import type { Trace, Event } from '@reaatech/shared';
+import type { Event, Trace } from '@reaatech/agent-replay-shared';
 
 /** An annotation attached to a specific point in a trace. */
 export interface TraceAnnotation {
@@ -49,7 +49,7 @@ export class AnnotationManager {
 
   /** Remove an annotation by ID. */
   remove(id: string): boolean {
-    const idx = this.annotations.findIndex(a => a.id === id);
+    const idx = this.annotations.findIndex((a) => a.id === id);
     if (idx === -1) return false;
     this.annotations.splice(idx, 1);
     return true;
@@ -58,9 +58,9 @@ export class AnnotationManager {
   /** Update an annotation's content. */
   update(
     id: string,
-    updates: Partial<Pick<TraceAnnotation, 'content' | 'severity' | 'tags'>>
+    updates: Partial<Pick<TraceAnnotation, 'content' | 'severity' | 'tags'>>,
   ): TraceAnnotation | null {
-    const ann = this.annotations.find(a => a.id === id);
+    const ann = this.annotations.find((a) => a.id === id);
     if (!ann) return null;
     if (updates.content !== undefined) ann.content = updates.content;
     if (updates.severity !== undefined) ann.severity = updates.severity;
@@ -70,7 +70,7 @@ export class AnnotationManager {
 
   /** Get a single annotation by ID. */
   get(id: string): TraceAnnotation | undefined {
-    return this.annotations.find(a => a.id === id);
+    return this.annotations.find((a) => a.id === id);
   }
 
   /** List all annotations, optionally filtered. */
@@ -79,21 +79,20 @@ export class AnnotationManager {
     if (!query) return result;
 
     if (query.spanId) {
-      result = result.filter(a => a.spanId === query.spanId);
+      result = result.filter((a) => a.spanId === query.spanId);
     }
     if (query.author) {
-      result = result.filter(a => a.author === query.author);
+      result = result.filter((a) => a.author === query.author);
     }
     if (query.severity) {
-      result = result.filter(a => a.severity === query.severity);
+      result = result.filter((a) => a.severity === query.severity);
     }
     if (query.tags && query.tags.length > 0) {
-      result = result.filter(a => query.tags!.some(t => a.tags.includes(t)));
+      result = result.filter((a) => query.tags?.some((t) => a.tags.includes(t)));
     }
     if (query.contentContains) {
-      result = result.filter(a =>
-        a.content.toLowerCase().includes(query.contentContains!.toLowerCase())
-      );
+      const search = query.contentContains.toLowerCase();
+      result = result.filter((a) => a.content.toLowerCase().includes(search));
     }
 
     return result;
@@ -101,7 +100,7 @@ export class AnnotationManager {
 
   /** Get all annotations for a specific span. */
   getForSpan(spanId: string): TraceAnnotation[] {
-    return this.annotations.filter(a => a.spanId === spanId);
+    return this.annotations.filter((a) => a.spanId === spanId);
   }
 
   /** Count annotations by severity. */
@@ -115,7 +114,7 @@ export class AnnotationManager {
 
   /** Serialize annotations to events that can be embedded in a trace. */
   toEvents(): Event[] {
-    return this.annotations.map(ann => ({
+    return this.annotations.map((ann) => ({
       timestamp: ann.createdAt,
       type: 'annotation' as const,
       name: ann.id,
@@ -151,7 +150,7 @@ export class AnnotationManager {
                 typeof event.attributes.author === 'string' ? event.attributes.author : 'unknown',
               createdAt: event.timestamp,
               severity: (['info', 'warning', 'critical'] as const).includes(
-                event.attributes.severity as 'info' | 'warning' | 'critical'
+                event.attributes.severity as 'info' | 'warning' | 'critical',
               )
                 ? (event.attributes.severity as TraceAnnotation['severity'])
                 : undefined,
@@ -179,7 +178,7 @@ export function formatAnnotations(annotations: TraceAnnotation[]): string {
   for (const ann of annotations) {
     const severityTag = ann.severity ? `[${ann.severity.toUpperCase()}] ` : '';
     lines.push(
-      `${severityTag}#${ann.id} by ${ann.author} @ ${new Date(ann.createdAt).toISOString()}`
+      `${severityTag}#${ann.id} by ${ann.author} @ ${new Date(ann.createdAt).toISOString()}`,
     );
     lines.push(`  Span: ${ann.spanId}${ann.eventName ? ` / Event: ${ann.eventName}` : ''}`);
     lines.push(`  ${ann.content}`);

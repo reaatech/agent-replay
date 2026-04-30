@@ -1,15 +1,15 @@
-import { describe, it, expect, vi } from 'vitest';
-import { RecordingEngine } from '@reaatech/core';
+import { RecordingEngine } from '@reaatech/agent-replay-core';
 import {
   InterceptorError,
   type LLMRequest,
   type LLMResponse,
   type StreamChunk,
-} from '@reaatech/shared';
+} from '@reaatech/agent-replay-shared';
+import { describe, expect, it, vi } from 'vitest';
 
+import type { LLMProviderAdapter } from '../adapter.js';
 import { BaseInterceptor, InterceptorRegistry } from '../interceptor.js';
 import type { InstallationResult } from '../interceptor.js';
-import type { LLMProviderAdapter } from '../adapter.js';
 
 // Concrete subclass for testing BaseInterceptor
 class TestInterceptor extends BaseInterceptor {

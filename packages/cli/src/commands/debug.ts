@@ -1,11 +1,11 @@
-import { Command } from 'commander';
 import {
+  AnnotationManager,
   LocalFileStorage,
   ReplayDebugger,
-  AnnotationManager,
   formatDebugSession,
-} from '@reaatech/core';
-import type { SpanKind } from '@reaatech/shared';
+} from '@reaatech/agent-replay-core';
+import type { SpanKind } from '@reaatech/agent-replay-shared';
+import { Command } from 'commander';
 
 export interface DebugOptions {
   trace: string;
@@ -31,7 +31,7 @@ export async function debug(options: DebugOptions): Promise<void> {
       const condition: Parameters<typeof debugger_.addBreakpoint>[0] = {};
       if (options.kind) condition.kind = options.kind as SpanKind;
       if (options.span) condition.name = options.span;
-      if (options.step !== undefined) condition.stepIndex = parseInt(options.step, 10);
+      if (options.step !== undefined) condition.stepIndex = Number.parseInt(options.step, 10);
       debugger_.addBreakpoint(condition);
     }
 
@@ -82,12 +82,12 @@ export async function debug(options: DebugOptions): Promise<void> {
       // Show watch values at this step
       const watchResults = debugger_.evaluateWatchpoints();
       for (const wr of watchResults) {
-        const current = wr.values.find(v => v.step === snapshot!.step);
+        const current = wr.values.find((v) => v.step === snapshot?.step);
         if (current) {
-          const changed = wr.changes.some(c => c.to === snapshot!.step);
+          const changed = wr.changes.some((c) => c.to === snapshot?.step);
           const color = changed ? '\x1b[36m' : '\x1b[90m';
           console.log(
-            `  ${color}Watch "${wr.expression}" = ${JSON.stringify(current.value)}${changed ? ' *changed*' : ''}\x1b[0m`
+            `  ${color}Watch "${wr.expression}" = ${JSON.stringify(current.value)}${changed ? ' *changed*' : ''}\x1b[0m`,
           );
         }
       }
@@ -106,7 +106,7 @@ export async function debug(options: DebugOptions): Promise<void> {
         console.log(`\nWatch "${wr.expression}" changed ${wr.changes.length} time(s):`);
         for (const ch of wr.changes) {
           console.log(
-            `  Step ${ch.from} → ${ch.to}: ${JSON.stringify(ch.before)} → ${JSON.stringify(ch.after)}`
+            `  Step ${ch.from} → ${ch.to}: ${JSON.stringify(ch.before)} → ${JSON.stringify(ch.after)}`,
           );
         }
       }
@@ -127,14 +127,14 @@ export const debugCommand = new Command('debug')
   .option('-s, --span <name>', 'Break on span name (exact match)')
   .option(
     '-k, --kind <kind>',
-    'Break on span kind (llm_call, tool_call, agent_step, routing_decision, state_change, error)'
+    'Break on span kind (llm_call, tool_call, agent_step, routing_decision, state_change, error)',
   )
   .option('--step <number>', 'Break at a specific step index')
   .option(
     '-w, --watch <expr>',
     'Add a watch expression (can be used multiple times)',
     collect,
-    [] as string[]
+    [] as string[],
   )
   .option('--annotations', 'Show annotations for each span', false)
   .action(debug);

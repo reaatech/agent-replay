@@ -1,7 +1,7 @@
 {
   "name": "@reaatech/agent-replay",
   "version": "0.1.0",
-  "description": "Main package for Agent Replay — re-exports core and interceptors",
+  "description": "Main package for Agent Replay \u2014 re-exports core and interceptors",
   "license": "MIT",
   "author": "Rick Somers <rick@reaatech.com> (https://reaatech.com)",
   "homepage": "https://github.com/reaatech/agent-replay#readme",
@@ -13,25 +13,19 @@
   "bugs": {
     "url": "https://github.com/reaatech/agent-replay/issues"
   },
-  "keywords": [
-    "agent",
-    "replay",
-    "llm",
-    "debugging",
-    "testing"
-  ],
+  "keywords": ["agent", "replay", "llm", "debugging", "testing"],
   "type": "module",
-  "main": "./dist/index.js",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
-      "import": "./dist/index.js"
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
     }
   },
-  "files": [
-    "dist"
-  ],
+  "files": ["dist"],
   "engines": {
     "node": ">=18.0.0"
   },
@@ -39,22 +33,22 @@
     "access": "public"
   },
   "scripts": {
-    "build": "tsup src/index.ts --format esm --dts",
-    "dev": "tsup src/index.ts --format esm --dts --watch",
+    "build": "tsup src/index.ts --format esm,cjs --dts",
+    "dev": "tsup src/index.ts --format esm,cjs --dts --watch",
     "type-check": "tsc --noEmit",
     "test": "vitest run",
     "clean": "rm -rf dist",
     "prepublishOnly": "pnpm run build && pnpm test"
   },
   "dependencies": {
-    "@reaatech/core": "workspace:*",
-    "@reaatech/interceptors": "workspace:*",
-    "@reaatech/shared": "workspace:*"
+    "@reaatech/agent-replay-core": "workspace:*",
+    "@reaatech/agent-replay-interceptors": "workspace:*",
+    "@reaatech/agent-replay-shared": "workspace:*"
   },
   "devDependencies": {
-    "@vitest/coverage-v8": "^1.6.0",
+    "@vitest/coverage-v8": "^3.2.4",
     "tsup": "^8.0.2",
     "typescript": "^5.4.5",
-    "vitest": "^1.5.0"
+    "vitest": "^3.1.1"
   }
 }

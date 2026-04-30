@@ -1,5 +1,5 @@
-import type { RecordingEngine, FrameworkStateAdapter } from '@reaatech/core';
-import type { SerializedState, Message, ToolCall, Event } from '@reaatech/shared';
+import type { FrameworkStateAdapter, RecordingEngine } from '@reaatech/agent-replay-core';
+import type { Event, Message, SerializedState, ToolCall } from '@reaatech/agent-replay-shared';
 
 /**
  * Configuration for LangChain integration.
@@ -21,7 +21,7 @@ export interface LangChainCallbackHandler {
   handleLLMStart(
     llm: { name: string; model: string },
     prompts: string[],
-    runId: string
+    runId: string,
   ): void | Promise<void>;
   /** Called when an LLM produces output. */
   handleLLMEnd(
@@ -30,12 +30,12 @@ export interface LangChainCallbackHandler {
       toolCalls?: ToolCall[];
       usage?: { prompt: number; completion: number; total: number };
     },
-    runId: string
+    runId: string,
   ): void | Promise<void>;
   /** Called when a tool starts executing. */
   handleToolStart(
     tool: { name: string; description?: string; args: Record<string, unknown> },
-    runId: string
+    runId: string,
   ): void | Promise<void>;
   /** Called when a tool finishes executing. */
   handleToolEnd(output: string, runId: string): void | Promise<void>;
@@ -43,7 +43,7 @@ export interface LangChainCallbackHandler {
   handleChainStart(
     chain: { name: string },
     inputs: Record<string, unknown>,
-    runId: string
+    runId: string,
   ): void | Promise<void>;
   /** Called when a chain step ends. */
   handleChainEnd(outputs: Record<string, unknown>, runId: string): void | Promise<void>;
@@ -55,7 +55,7 @@ export interface LangChainCallbackHandler {
  * Creates a LangChain-compatible callback handler that records agent interactions.
  */
 export function createLangChainHandler(
-  config: LangChainIntegrationConfig
+  config: LangChainIntegrationConfig,
 ): LangChainCallbackHandler {
   const engine = config.recordingEngine;
   const activeRuns = new Map<string, { spanName: string; kind: string; spanId: string }>();
@@ -229,7 +229,7 @@ export const langchainStateAdapter: FrameworkStateAdapter = {
           if (typeof m.content === 'string' && typeof m.role === 'string') {
             const role = m.role;
             const validRole: Message['role'] = ['system', 'user', 'assistant', 'tool'].includes(
-              role
+              role,
             )
               ? (role as Message['role'])
               : 'user';
@@ -272,7 +272,7 @@ export const langchainStateAdapter: FrameworkStateAdapter = {
     // Reconstruct a LangChain-compatible state object
     return {
       memory: {
-        chat_history: snapshot.conversation.messages.map(m => ({
+        chat_history: snapshot.conversation.messages.map((m) => ({
           role: m.role,
           content: m.content,
         })),

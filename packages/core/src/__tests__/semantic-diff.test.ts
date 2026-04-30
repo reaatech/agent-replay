@@ -1,5 +1,5 @@
-import { describe, it, expect } from 'vitest';
-import type { Trace } from '@reaatech/shared';
+import type { Trace } from '@reaatech/agent-replay-shared';
+import { describe, expect, it } from 'vitest';
 
 import { SemanticDiffEngine, formatSemanticDiff } from '../semantic-diff.js';
 
@@ -58,7 +58,7 @@ function createTrace(id: string, contents: string[]): Trace {
 
 function createToolTrace(
   id: string,
-  calls: Array<{ name?: string; arguments?: Record<string, unknown> } | null>
+  calls: Array<{ name?: string; arguments?: Record<string, unknown> } | null>,
 ): Trace {
   return {
     version: '1.0.0',
@@ -164,7 +164,7 @@ function createRoutingTrace(id: string, decisions: unknown[]): Trace {
 
 function createLLMTraceWithToolCalls(
   id: string,
-  spans: Array<{ content?: string; toolCalls?: unknown[]; startTime?: number; endTime?: number }>
+  spans: Array<{ content?: string; toolCalls?: unknown[]; startTime?: number; endTime?: number }>,
 ): Trace {
   return {
     version: '1.0.0',
@@ -243,7 +243,7 @@ describe('SemanticDiffEngine', () => {
     const current = createTrace('curr', ['Hello', 'World']);
     const result = engine.compare(baseline, current);
 
-    expect(result.differences.some(d => d.type === 'structure')).toBe(true);
+    expect(result.differences.some((d) => d.type === 'structure')).toBe(true);
   });
 
   it('should detect kind mismatch', () => {
@@ -552,7 +552,7 @@ describe('SemanticDiffEngine', () => {
       const current = createTrace('curr', [`${words(19)} extra`]);
       const result = defaultEngine.compare(baseline, current);
 
-      expect(result.differences.filter(d => d.type === 'text')).toHaveLength(0);
+      expect(result.differences.filter((d) => d.type === 'text')).toHaveLength(0);
     });
 
     it('should not report diff when similarity is barely above threshold', () => {
@@ -560,7 +560,7 @@ describe('SemanticDiffEngine', () => {
       const current = createTrace('curr', [`${words(20)} extra`]);
       const result = defaultEngine.compare(baseline, current);
 
-      expect(result.differences.filter(d => d.type === 'text')).toHaveLength(0);
+      expect(result.differences.filter((d) => d.type === 'text')).toHaveLength(0);
     });
 
     it('should report medium diff when similarity is barely below threshold', () => {
@@ -568,7 +568,7 @@ describe('SemanticDiffEngine', () => {
       const current = createTrace('curr', [`${words(18)} extra`]);
       const result = defaultEngine.compare(baseline, current);
 
-      const textDiffs = result.differences.filter(d => d.type === 'text');
+      const textDiffs = result.differences.filter((d) => d.type === 'text');
       expect(textDiffs).toHaveLength(1);
       expect(textDiffs[0].severity).toBe('medium');
     });
@@ -578,7 +578,7 @@ describe('SemanticDiffEngine', () => {
       const current = createTrace('curr', [`${words(4)} extra`]);
       const result = defaultEngine.compare(baseline, current);
 
-      const textDiffs = result.differences.filter(d => d.type === 'text');
+      const textDiffs = result.differences.filter((d) => d.type === 'text');
       expect(textDiffs).toHaveLength(1);
       expect(textDiffs[0].severity).toBe('medium');
     });
@@ -588,7 +588,7 @@ describe('SemanticDiffEngine', () => {
       const current = createTrace('curr', [`${words(3)} extra`]);
       const result = defaultEngine.compare(baseline, current);
 
-      const textDiffs = result.differences.filter(d => d.type === 'text');
+      const textDiffs = result.differences.filter((d) => d.type === 'text');
       expect(textDiffs).toHaveLength(1);
       expect(textDiffs[0].severity).toBe('high');
     });
@@ -600,7 +600,7 @@ describe('SemanticDiffEngine', () => {
       const current = createTrace('curr', ['hello']);
       const result = engine.compare(baseline, current);
 
-      const textDiffs = result.differences.filter(d => d.type === 'text');
+      const textDiffs = result.differences.filter((d) => d.type === 'text');
       expect(textDiffs).toHaveLength(1);
       expect(textDiffs[0].severity).toBe('high');
       expect(textDiffs[0].similarity).toBe(0);
@@ -615,7 +615,7 @@ describe('SemanticDiffEngine', () => {
       ];
       const result = engine.compare(baseline, current);
 
-      const textDiffs = result.differences.filter(d => d.type === 'text');
+      const textDiffs = result.differences.filter((d) => d.type === 'text');
       expect(textDiffs).toHaveLength(1);
       expect(textDiffs[0].severity).toBe('high');
       expect(textDiffs[0].after).toBe('');
@@ -721,9 +721,9 @@ describe('SemanticDiffEngine', () => {
       const result = timingEngine.compare(baseline, current);
 
       expect(result.differences).toHaveLength(3);
-      const types = result.differences.map(d => d.type);
+      const types = result.differences.map((d) => d.type);
       expect(types).toEqual(expect.arrayContaining(['text', 'tool_call', 'timing']));
-      const timingDiff = result.differences.find(d => d.type === 'timing');
+      const timingDiff = result.differences.find((d) => d.type === 'timing');
       expect(timingDiff?.severity).toBe('medium');
     });
 

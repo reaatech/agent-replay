@@ -202,7 +202,7 @@ pnpm lint
 pnpm test
 
 # Run tests for specific package
-pnpm test --filter @reaatech/core
+pnpm test --filter @reaatech/agent-replay-core
 
 # Run tests with coverage
 pnpm test:coverage

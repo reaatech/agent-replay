@@ -1,5 +1,5 @@
 {
-  "name": "@reaatech/interceptors",
+  "name": "@reaatech/agent-replay-interceptors",
   "version": "0.1.0",
   "description": "LLM provider interceptors for Agent Replay",
   "license": "MIT",
@@ -13,14 +13,7 @@
   "bugs": {
     "url": "https://github.com/reaatech/agent-replay/issues"
   },
-  "keywords": [
-    "agent",
-    "replay",
-    "llm",
-    "openai",
-    "anthropic",
-    "interceptor"
-  ],
+  "keywords": ["agent", "replay", "llm", "openai", "anthropic", "interceptor"],
   "type": "module",
   "engines": {
     "node": ">=18.0.0"
@@ -28,34 +21,33 @@
   "publishConfig": {
     "access": "public"
   },
-  "main": "./dist/index.js",
+  "main": "./dist/index.cjs",
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
-      "import": "./dist/index.js"
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
     }
   },
-  "files": [
-    "dist"
-  ],
+  "files": ["dist"],
   "scripts": {
-    "build": "tsup src/index.ts --format esm --dts",
-    "dev": "tsup src/index.ts --format esm --dts --watch",
+    "build": "tsup src/index.ts --format esm,cjs --dts",
+    "dev": "tsup src/index.ts --format esm,cjs --dts --watch",
     "type-check": "tsc --noEmit",
     "test": "vitest run",
     "clean": "rm -rf dist",
     "prepublishOnly": "pnpm run build && pnpm test"
   },
   "dependencies": {
-    "@reaatech/shared": "workspace:*",
-    "@reaatech/core": "workspace:*"
+    "@reaatech/agent-replay-shared": "workspace:*",
+    "@reaatech/agent-replay-core": "workspace:*"
   },
   "devDependencies": {
-    "@vitest/coverage-v8": "^1.6.0",
+    "@vitest/coverage-v8": "^3.2.4",
     "tsup": "^8.0.2",
     "typescript": "^5.4.5",
-    "vitest": "^1.5.0"
+    "vitest": "^3.1.1"
   }
 }

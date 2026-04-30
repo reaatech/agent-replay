@@ -1,5 +1,5 @@
-import { describe, it, expect } from 'vitest';
-import type { StreamChunk, LLMResponse } from '@reaatech/shared';
+import type { LLMResponse, StreamChunk } from '@reaatech/agent-replay-shared';
+import { describe, expect, it } from 'vitest';
 
 import { StreamingRecorder, StreamingStubEngine } from '../streaming.js';
 
@@ -63,7 +63,7 @@ describe('StreamingRecorder', () => {
       output.push(chunk);
     }
 
-    expect(output.map(c => c.delta).join('')).toBe('AB');
+    expect(output.map((c) => c.delta).join('')).toBe('AB');
   });
 });
 

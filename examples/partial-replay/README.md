@@ -5,7 +5,7 @@ This example shows how to replay a trace up to a checkpoint, then continue with 
 ## Usage
 
 ```typescript
-import { PartialReplayOrchestrator, LocalFileStorage } from '@reaatech/core';
+import { PartialReplayOrchestrator, LocalFileStorage } from '@reaatech/agent-replay-core';
 
 const storage = new LocalFileStorage();
 const trace = await storage.load('./my-trace.artrace.json');

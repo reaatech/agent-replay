@@ -1,12 +1,12 @@
 import {
-  type Trace,
   type Checkpoint,
   type ReplayConfig,
-  type ReplayResult,
-  type ReplayProgress,
-  type Span,
   ReplayFailedError,
-} from '@reaatech/shared';
+  type ReplayProgress,
+  type ReplayResult,
+  type Span,
+  type Trace,
+} from '@reaatech/agent-replay-shared';
 
 import { DeterminismController } from './state-capture.js';
 
@@ -25,7 +25,7 @@ export class PartialReplayOrchestrator {
    * Find the checkpoint in a trace by ID.
    */
   findCheckpoint(trace: Trace, checkpointId: string): Checkpoint {
-    const checkpoint = trace.checkpoints.find(cp => cp.id === checkpointId);
+    const checkpoint = trace.checkpoints.find((cp) => cp.id === checkpointId);
     if (!checkpoint) {
       throw new ReplayFailedError(`Checkpoint not found: ${checkpointId}`, 0);
     }
@@ -36,7 +36,7 @@ export class PartialReplayOrchestrator {
    * Find the span index at which a checkpoint was created.
    */
   findCheckpointSpanIndex(trace: Trace, checkpoint: Checkpoint): number {
-    const index = trace.spans.findIndex(s => s.id === checkpoint.spanId);
+    const index = trace.spans.findIndex((s) => s.id === checkpoint.spanId);
     if (index === -1) {
       throw new ReplayFailedError(`Checkpoint references unknown span: ${checkpoint.spanId}`, 0);
     }
@@ -90,7 +90,7 @@ export class PartialReplayOrchestrator {
     trace: Trace,
     startIndex: number,
     endIndex: number,
-    onProgress?: (progress: ReplayProgress) => void
+    onProgress?: (progress: ReplayProgress) => void,
   ): { outputs: unknown[]; lastIndex: number } {
     const outputs: unknown[] = [];
     const slice = trace.spans.slice(startIndex, endIndex + 1);
@@ -99,7 +99,7 @@ export class PartialReplayOrchestrator {
     for (let i = 0; i < slice.length; i++) {
       const span = slice[i];
       if (span.kind === 'llm_call') {
-        const responseEvent = span.events.find(e => e.type === 'response');
+        const responseEvent = span.events.find((e) => e.type === 'response');
         if (responseEvent) {
           outputs.push(responseEvent.data);
         }
@@ -127,7 +127,7 @@ export class PartialReplayOrchestrator {
     trace: Trace,
     checkpointId: string,
     config: ReplayConfig,
-    liveExecutor: (spans: Span[]) => Promise<ReplayResult>
+    liveExecutor: (spans: Span[]) => Promise<ReplayResult>,
   ): Promise<ReplayResult> {
     const checkpoint = this.findCheckpoint(trace, checkpointId);
     const checkpointIndex = this.findCheckpointSpanIndex(trace, checkpoint);

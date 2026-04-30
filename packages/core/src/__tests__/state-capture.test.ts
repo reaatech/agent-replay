@@ -1,10 +1,10 @@
-import { describe, it, expect, beforeEach, afterEach } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 
 import {
-  StructuredCloneStrategy,
-  SnapshotterRegistry,
-  FrameworkAdapterRegistry,
   DeterminismController,
+  FrameworkAdapterRegistry,
+  SnapshotterRegistry,
+  StructuredCloneStrategy,
 } from '../state-capture.js';
 
 describe('StructuredCloneStrategy', () => {

@@ -1,18 +1,18 @@
-import type { RecordingEngine } from '@reaatech/core';
+import type { RecordingEngine } from '@reaatech/agent-replay-core';
 import {
-  type RecordedStream,
-  type StreamChunk,
   type CaptureContext,
   InterceptorError,
-} from '@reaatech/shared';
+  type RecordedStream,
+  type StreamChunk,
+} from '@reaatech/agent-replay-shared';
 
+import { BaseInterceptor, type InstallationResult } from './interceptor.js';
 import {
   OpenAIAdapter,
   type OpenAIChatCompletion,
   type OpenAIChatCompletionChunk,
   type OpenAIChatCompletionCreateParams,
 } from './openai-adapter.js';
-import { BaseInterceptor, type InstallationResult } from './interceptor.js';
 
 // Minimal OpenAI client interface for typing
 interface OpenAIClientLike {
@@ -64,22 +64,22 @@ export class OpenAIInterceptor extends BaseInterceptor {
             attributes: { provider: 'openai', model: normalizedRequest.model },
             data: redactedRequest,
           },
-          { spanId } as CaptureContext
+          { spanId } as CaptureContext,
         );
       }
 
-      const rawResponse = await this.originalCreate!.call(client.chat.completions, ...args);
+      const rawResponse = await this.originalCreate?.call(client.chat.completions, ...args);
 
       if (request.stream) {
         return this.handleStreamingResponse(
           rawResponse as AsyncIterable<OpenAIChatCompletionChunk>,
-          spanId
+          spanId,
         );
       }
 
       if (spanId) {
         const normalizedResponse = this.adapter.normalizeResponse(
-          rawResponse as OpenAIChatCompletion
+          rawResponse as OpenAIChatCompletion,
         );
         this.recorder.captureEvent(
           {
@@ -89,7 +89,7 @@ export class OpenAIInterceptor extends BaseInterceptor {
             attributes: {},
             data: normalizedResponse,
           },
-          { spanId } as CaptureContext
+          { spanId } as CaptureContext,
         );
         this.recorder.endSpan(spanId);
       }
@@ -115,7 +115,7 @@ export class OpenAIInterceptor extends BaseInterceptor {
 
   private async *handleStreamingResponse(
     source: AsyncIterable<OpenAIChatCompletionChunk>,
-    spanId?: string
+    spanId?: string,
   ): AsyncGenerator<OpenAIChatCompletionChunk> {
     const chunks: StreamChunk[] = [];
     let content = '';
@@ -137,7 +137,7 @@ export class OpenAIInterceptor extends BaseInterceptor {
             attributes: { error: (error as Error).message },
             data: { message: (error as Error).message },
           },
-          { spanId } as CaptureContext
+          { spanId } as CaptureContext,
         );
         this.recorder.endSpan(spanId, 'error');
       }
@@ -160,7 +160,7 @@ export class OpenAIInterceptor extends BaseInterceptor {
           attributes: {},
           data: recordedStream,
         },
-        { spanId } as CaptureContext
+        { spanId } as CaptureContext,
       );
       this.recorder.endSpan(spanId);
     }

@@ -1,13 +1,13 @@
-import {
-  type Trace,
-  type TraceMetadata,
-  type RecordingConfig,
-  type Event,
-  type Span,
-  type SpanKind,
-  type Checkpoint,
-  type SerializedState,
-} from '@reaatech/shared';
+import type {
+  Checkpoint,
+  Event,
+  RecordingConfig,
+  SerializedState,
+  Span,
+  SpanKind,
+  Trace,
+  TraceMetadata,
+} from '@reaatech/agent-replay-shared';
 
 function findLast<T>(arr: T[], predicate: (item: T) => boolean): T | undefined {
   for (let i = arr.length - 1; i >= 0; i--) {
@@ -77,7 +77,7 @@ export class TraceBuilder {
   }
 
   endSpan(trace: Trace, spanId: string, status: 'ok' | 'error' = 'ok'): void {
-    const span = trace.spans.find(s => s.id === spanId);
+    const span = trace.spans.find((s) => s.id === spanId);
     if (span) {
       span.status = status;
       span.endTime = Date.now();
@@ -85,14 +85,14 @@ export class TraceBuilder {
   }
 
   addEvent(trace: Trace, event: Event): void {
-    const currentSpan = findLast(trace.spans, s => s.status === 'in_progress');
+    const currentSpan = findLast(trace.spans, (s) => s.status === 'in_progress');
     if (currentSpan) {
       currentSpan.events.push(event);
     }
   }
 
   addEventToSpan(trace: Trace, spanId: string, event: Event): void {
-    const span = trace.spans.find(s => s.id === spanId);
+    const span = trace.spans.find((s) => s.id === spanId);
     if (span) {
       span.events.push(event);
     }

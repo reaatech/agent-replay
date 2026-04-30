@@ -211,7 +211,7 @@ export abstract class AgentReplayError extends Error {
   constructor(
     message: string,
     public readonly code: string,
-    public readonly cause?: Error
+    public readonly cause?: Error,
   ) {
     super(message);
     this.name = this.constructor.name;
@@ -243,7 +243,7 @@ export class TraceNotFoundError extends AgentReplayError {
 export class InvalidTraceError extends AgentReplayError {
   constructor(
     message: string,
-    public readonly validationErrors: ValidationError[]
+    public readonly validationErrors: ValidationError[],
   ) {
     super(message, 'INVALID_TRACE');
   }
@@ -253,7 +253,7 @@ export class ReplayFailedError extends AgentReplayError {
   constructor(
     message: string,
     public readonly step: number,
-    cause?: Error
+    cause?: Error,
   ) {
     super(message, 'REPLAY_FAILED', cause);
   }
@@ -263,7 +263,7 @@ export class StateCaptureError extends AgentReplayError {
   constructor(
     message: string,
     public readonly stateType: string,
-    cause?: Error
+    cause?: Error,
   ) {
     super(message, 'STATE_CAPTURE_FAILED', cause);
   }
@@ -272,7 +272,7 @@ export class StateCaptureError extends AgentReplayError {
 export class DivergenceError extends AgentReplayError {
   constructor(
     message: string,
-    public readonly divergence: DivergenceReport
+    public readonly divergence: DivergenceReport,
   ) {
     super(message, 'DIVERGENCE_DETECTED');
   }

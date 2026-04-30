@@ -1,4 +1,4 @@
-import { RecordingEngine, LocalFileStorage } from '@reaatech/core';
+import { LocalFileStorage, RecordingEngine } from '@reaatech/agent-replay-core';
 
 async function main() {
   const engine = new RecordingEngine();
@@ -17,7 +17,7 @@ async function main() {
       attributes: { model: 'gpt-4' },
       data: { content: 'Hello! How can I help you today?' },
     },
-    { spanId: span1 }
+    { spanId: span1 },
   );
   engine.endSpan(span1, 'ok');
 
@@ -30,7 +30,7 @@ async function main() {
       attributes: { tool: 'web_search' },
       data: { query: 'TypeScript best practices' },
     },
-    { spanId: span2 }
+    { spanId: span2 },
   );
   engine.captureEvent(
     {
@@ -40,7 +40,7 @@ async function main() {
       attributes: { tool: 'web_search' },
       data: { results: ['Result 1', 'Result 2'] },
     },
-    { spanId: span2 }
+    { spanId: span2 },
   );
   engine.endSpan(span2, 'ok');
 

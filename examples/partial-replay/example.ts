@@ -1,5 +1,5 @@
-import { PartialReplayOrchestrator, LocalFileStorage } from '@reaatech/core';
-import type { Span } from '@reaatech/shared';
+import { LocalFileStorage, PartialReplayOrchestrator } from '@reaatech/agent-replay-core';
+import type { Span } from '@reaatech/agent-replay-shared';
 
 async function main() {
   const storage = new LocalFileStorage();
@@ -7,7 +7,7 @@ async function main() {
   // Load a previously recorded trace
   const trace = await storage.load('./basic-trace.artrace.json');
   console.log(
-    `Loaded trace with ${trace.spans.length} spans and ${trace.checkpoints.length} checkpoints`
+    `Loaded trace with ${trace.spans.length} spans and ${trace.checkpoints.length} checkpoints`,
   );
 
   if (trace.checkpoints.length === 0) {
@@ -23,7 +23,7 @@ async function main() {
   const result = await orchestrator.partialReplay(
     trace,
     checkpointId,
-    {},
+    { mode: 'partial', checkpointId },
     async (spans: Span[]) => {
       // Live execution: this is where your real agent code would run
       console.log(`Going live with ${spans.length} spans`);
@@ -34,7 +34,7 @@ async function main() {
         })),
         duration: 100,
       };
-    }
+    },
   );
 
   console.log(`Partial replay complete. ${result.outputs.length} outputs produced.`);

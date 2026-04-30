@@ -1,5 +1,5 @@
-import { describe, it, expect } from 'vitest';
-import type { RecordingConfig } from '@reaatech/shared';
+import type { RecordingConfig } from '@reaatech/agent-replay-shared';
+import { describe, expect, it } from 'vitest';
 
 import { TraceBuilder } from '../trace-builder.js';
 

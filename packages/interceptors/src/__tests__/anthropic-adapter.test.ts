@@ -1,9 +1,9 @@
-import { describe, it, expect } from 'vitest';
+import { describe, expect, it } from 'vitest';
 
 import { AnthropicAdapter } from '../anthropic-adapter.js';
 import type {
-  AnthropicMessageCreateParams,
   AnthropicMessage,
+  AnthropicMessageCreateParams,
   AnthropicMessageStreamEvent,
 } from '../anthropic-adapter.js';
 

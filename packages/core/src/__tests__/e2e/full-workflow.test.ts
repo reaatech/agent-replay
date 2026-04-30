@@ -1,16 +1,16 @@
 import { unlink } from 'node:fs/promises';
 
-import { describe, it, expect, beforeAll, afterAll } from 'vitest';
 import {
-  RecordingEngine,
-  ReplayEngine,
-  PartialReplayOrchestrator,
-  SemanticDiffEngine,
   DivergenceDetector,
   LocalFileStorage,
+  PartialReplayOrchestrator,
+  RecordingEngine,
+  ReplayEngine,
+  SemanticDiffEngine,
   TraceSerializer,
-} from '@reaatech/core';
-import type { Trace, Span, LLMResponse, ReplayConfig } from '@reaatech/shared';
+} from '@reaatech/agent-replay-core';
+import type { LLMResponse, ReplayConfig, Span, Trace } from '@reaatech/agent-replay-shared';
+import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 
 const TEST_TRACE_PATH = '/tmp/e2e-test.artrace.json';
 
@@ -57,7 +57,7 @@ function buildMockTrace(): Trace {
       attributes: { model: 'gpt-4' },
       data: { content: 'Hello! How can I help?' },
     },
-    { spanId: span0 }
+    { spanId: span0 },
   );
   engine.endSpan(span0, 'ok');
 
@@ -70,7 +70,7 @@ function buildMockTrace(): Trace {
       attributes: { tool: 'search' },
       data: { query: 'best practices' },
     },
-    { spanId: span1 }
+    { spanId: span1 },
   );
   engine.captureEvent(
     {
@@ -80,7 +80,7 @@ function buildMockTrace(): Trace {
       attributes: { tool: 'search' },
       data: { results: ['Result 1', 'Result 2'] },
     },
-    { spanId: span1 }
+    { spanId: span1 },
   );
   engine.endSpan(span1, 'ok');
 
@@ -93,7 +93,7 @@ function buildMockTrace(): Trace {
       attributes: { model: 'gpt-4' },
       data: { content: 'Here are the best practices...' },
     },
-    { spanId: span2 }
+    { spanId: span2 },
   );
   engine.endSpan(span2, 'ok');
 
@@ -163,7 +163,7 @@ describe('E2E Full Workflow', () => {
           outputs: spans.map(() => ({ content: mockLLM.complete('prompt').content })),
           duration: 100,
         });
-      }
+      },
     );
 
     expect(result.outputs.length).toBeGreaterThan(0);

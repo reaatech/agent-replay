@@ -1,6 +1,10 @@
+import { LocalFileStorage, ReplayEngine } from '@reaatech/agent-replay-core';
+import type {
+  PartialReplayConfig,
+  ReplayConfig,
+  ReplayProgress,
+} from '@reaatech/agent-replay-shared';
 import { Command, Option } from 'commander';
-import { ReplayEngine, LocalFileStorage } from '@reaatech/core';
-import type { ReplayConfig, ReplayProgress, PartialReplayConfig } from '@reaatech/shared';
 
 export interface ReplayOptions {
   trace: string;
@@ -24,7 +28,7 @@ export async function replay(options: ReplayOptions): Promise<void> {
     const validModes = ['stubbed', 'live', 'partial', 'diff'] as const;
     if (!validModes.includes(options.mode as (typeof validModes)[number])) {
       console.error(
-        `Error: Invalid mode "${options.mode}". Must be one of: ${validModes.join(', ')}`
+        `Error: Invalid mode "${options.mode}". Must be one of: ${validModes.join(', ')}`,
       );
       process.exit(1);
     }
@@ -71,7 +75,7 @@ export const replayCommand = new Command('replay')
   .addOption(
     new Option('-m, --mode <mode>', 'Replay mode')
       .choices(['stubbed', 'live', 'partial', 'diff'])
-      .default('stubbed')
+      .default('stubbed'),
   )
   .option('-c, --checkpoint <id>', 'Checkpoint ID for partial replay')
   .option('--progress', 'Show progress', false)

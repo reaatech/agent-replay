@@ -1,13 +1,13 @@
 import {
+  InterceptorError,
   type LLMRequest,
   type LLMResponse,
-  type StreamChunk,
   type Message,
+  type StreamChunk,
   type ToolDefinition,
-  InterceptorError,
-} from '@reaatech/shared';
+} from '@reaatech/agent-replay-shared';
 
-import { LLMProviderAdapter } from './adapter.js';
+import type { LLMProviderAdapter } from './adapter.js';
 
 export interface AnthropicMessageCreateParams {
   model: string;
@@ -70,13 +70,13 @@ export class AnthropicAdapter implements LLMProviderAdapter {
       throw new InterceptorError('anthropic', new Error('Request must have a messages array'));
     }
 
-    const messages: Message[] = req.messages.map(m => {
+    const messages: Message[] = req.messages.map((m) => {
       const content =
-        typeof m.content === 'string' ? m.content : m.content.map(c => c.text).join('');
+        typeof m.content === 'string' ? m.content : m.content.map((c) => c.text).join('');
       return { role: m.role === 'user' ? 'user' : 'assistant', content };
     });
 
-    const tools: ToolDefinition[] | undefined = req.tools?.map(t => ({
+    const tools: ToolDefinition[] | undefined = req.tools?.map((t) => ({
       name: t.name,
       description: t.description ?? '',
       parameters: t.input_schema ?? {},
@@ -104,13 +104,13 @@ export class AnthropicAdapter implements LLMProviderAdapter {
       throw new InterceptorError('anthropic', new Error('Response must have a content array'));
     }
     const textContent = res.content
-      .filter(c => c.type === 'text')
-      .map(c => (c as { text: string }).text)
+      .filter((c) => c.type === 'text')
+      .map((c) => (c as { text: string }).text)
       .join('');
 
     const toolCalls = res.content
-      .filter(c => c.type === 'tool_use')
-      .map(c => ({
+      .filter((c) => c.type === 'tool_use')
+      .map((c) => ({
         id: (c as { id: string }).id,
         name: (c as { name: string }).name,
         arguments: (c as { input: Record<string, unknown> }).input,
@@ -150,11 +150,11 @@ export class AnthropicAdapter implements LLMProviderAdapter {
   denormalizeRequest(request: LLMRequest): unknown {
     return {
       model: request.model,
-      messages: request.messages.map(m => ({
+      messages: request.messages.map((m) => ({
         role: m.role,
         content: m.content,
       })),
-      tools: request.tools?.map(t => ({
+      tools: request.tools?.map((t) => ({
         name: t.name,
         description: t.description,
         input_schema: t.parameters,

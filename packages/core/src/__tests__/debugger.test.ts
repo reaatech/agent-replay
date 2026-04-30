@@ -1,5 +1,5 @@
-import { describe, it, expect } from 'vitest';
-import type { Trace } from '@reaatech/shared';
+import type { Trace } from '@reaatech/agent-replay-shared';
+import { describe, expect, it } from 'vitest';
 
 import { ReplayDebugger, formatDebugSession } from '../debugger.js';
 
@@ -140,12 +140,12 @@ describe('ReplayDebugger', () => {
 
     const snap0 = await debugger_.stepForward();
     expect(snap0).not.toBeNull();
-    expect(snap0!.step).toBe(0);
-    expect(snap0!.span.name).toBe('llm-greeting');
+    expect(snap0?.step).toBe(0);
+    expect(snap0?.span.name).toBe('llm-greeting');
 
     const snap1 = await debugger_.stepForward();
-    expect(snap1!.step).toBe(1);
-    expect(snap1!.span.name).toBe('tool-search');
+    expect(snap1?.step).toBe(1);
+    expect(snap1?.span.name).toBe('tool-search');
   });
 
   it('should return null when stepping past the end', async () => {
@@ -170,7 +170,7 @@ describe('ReplayDebugger', () => {
 
     const back = debugger_.stepBackward();
     expect(back).not.toBeNull();
-    expect(back!.step).toBe(0);
+    expect(back?.step).toBe(0);
     expect(debugger_.getSession().currentStep).toBe(0);
   });
 
@@ -188,7 +188,7 @@ describe('ReplayDebugger', () => {
 
     const snap = debugger_.goToCheckpoint('cp-1');
     expect(snap).not.toBeNull();
-    expect(snap!.span.name).toBe('tool-search');
+    expect(snap?.span.name).toBe('tool-search');
   });
 
   it('should return null for missing checkpoint', () => {
@@ -204,7 +204,7 @@ describe('ReplayDebugger', () => {
     debugger_.addBreakpoint({ kind: 'tool_call' });
 
     const hits: Array<{ step: number; spanName: string }> = [];
-    debugger_.setBreakpointHandler(hit => {
+    debugger_.setBreakpointHandler((hit) => {
       hits.push({ step: hit.step, spanName: hit.span.name });
       return true; // pause
     });
@@ -222,7 +222,7 @@ describe('ReplayDebugger', () => {
     debugger_.addBreakpoint({ name: 'llm-followup' });
 
     const hits: number[] = [];
-    debugger_.setBreakpointHandler(hit => {
+    debugger_.setBreakpointHandler((hit) => {
       hits.push(hit.step);
       return true;
     });
@@ -238,7 +238,7 @@ describe('ReplayDebugger', () => {
     debugger_.addBreakpoint({ stepIndex: 0 });
 
     const hits: number[] = [];
-    debugger_.setBreakpointHandler(hit => {
+    debugger_.setBreakpointHandler((hit) => {
       hits.push(hit.step);
       return true;
     });
@@ -252,11 +252,11 @@ describe('ReplayDebugger', () => {
   it('should hit breakpoints by custom predicate', async () => {
     const debugger_ = new ReplayDebugger(trace);
     debugger_.addBreakpoint({
-      predicate: span => span.status === 'error',
+      predicate: (span) => span.status === 'error',
     });
 
     const hits: number[] = [];
-    debugger_.setBreakpointHandler(hit => {
+    debugger_.setBreakpointHandler((hit) => {
       hits.push(hit.step);
       return true;
     });
@@ -313,10 +313,10 @@ describe('ReplayDebugger', () => {
     const results = debugger_.evaluateWatchpoints();
     expect(results).toHaveLength(2);
 
-    const nameWatch = results.find(r => r.expression === 'span.name');
+    const nameWatch = results.find((r) => r.expression === 'span.name');
     expect(nameWatch).toBeDefined();
-    expect(nameWatch!.values).toHaveLength(trace.spans.length);
-    expect(nameWatch!.changes.length).toBeGreaterThan(0);
+    expect(nameWatch?.values).toHaveLength(trace.spans.length);
+    expect(nameWatch?.changes.length).toBeGreaterThan(0);
   });
 
   it('should inspect variables at current step', async () => {
@@ -366,7 +366,7 @@ describe('ReplayDebugger', () => {
 
     const snap = debugger_.goToStep(0);
     expect(snap).not.toBeNull();
-    expect(snap!.step).toBe(0);
+    expect(snap?.step).toBe(0);
   });
 
   it('should return empty variables when no history', () => {
@@ -397,7 +397,7 @@ describe('ReplayDebugger', () => {
     debugger_.addBreakpoint({ name: /llm-.*up/ });
 
     const hits: number[] = [];
-    debugger_.setBreakpointHandler(hit => {
+    debugger_.setBreakpointHandler((hit) => {
       hits.push(hit.step);
       return true;
     });
@@ -416,7 +416,7 @@ describe('ReplayDebugger', () => {
 
     const snap = debugger_.goToStep(0);
     expect(snap).not.toBeNull();
-    expect(snap!.step).toBe(0);
+    expect(snap?.step).toBe(0);
   });
 
   it('should format session with breakpoint hits', async () => {

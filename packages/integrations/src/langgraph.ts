@@ -1,5 +1,5 @@
-import type { RecordingEngine, FrameworkStateAdapter } from '@reaatech/core';
-import type { SerializedState, Message, Event } from '@reaatech/shared';
+import type { FrameworkStateAdapter, RecordingEngine } from '@reaatech/agent-replay-core';
+import type { Event, Message, SerializedState } from '@reaatech/agent-replay-shared';
 
 /**
  * Configuration for LangGraph integration.
@@ -24,7 +24,7 @@ export interface LangGraphHooks {
     source: string,
     condition: string,
     target: string | string[],
-    runId: string
+    runId: string,
   ): void | Promise<void>;
   /** Called when the graph completes. */
   onComplete(finalState: unknown, runId: string): void | Promise<void>;
@@ -215,10 +215,10 @@ export const langgraphStateAdapter: FrameworkStateAdapter = {
 
   restore(snapshot: SerializedState): unknown {
     return {
-      messages: snapshot.conversation.messages.map(m => ({
+      messages: snapshot.conversation.messages.map((m) => ({
         role: m.role,
         content: m.content,
-        tool_calls: m.toolCalls?.map(tc => ({
+        tool_calls: m.toolCalls?.map((tc) => ({
           id: tc.id,
           name: tc.name,
           args: tc.arguments,

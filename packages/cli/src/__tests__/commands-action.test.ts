@@ -1,14 +1,14 @@
 import { mkdir, rm, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { LocalFileStorage } from '@reaatech/core';
+import { LocalFileStorage } from '@reaatech/agent-replay-core';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { replay } from '../commands/replay.js';
-import { explore } from '../commands/explore.js';
-import { diff } from '../commands/diff.js';
 import { debug } from '../commands/debug.js';
+import { diff } from '../commands/diff.js';
+import { explore } from '../commands/explore.js';
 import { record } from '../commands/record.js';
+import { replay } from '../commands/replay.js';
 
 const TEST_TRACES_DIR = join(process.cwd(), 'traces');
 
@@ -97,14 +97,14 @@ describe('CLI action handlers', () => {
 
       void record({ output: outputDir, name: 'test-rec', providers: 'openai', state: true });
 
-      await new Promise(r => setTimeout(r, 50));
+      await new Promise((r) => setTimeout(r, 50));
 
-      const sigintHandler = onSpy.mock.calls.find(c => c[0] === 'SIGINT')?.[1] as
+      const sigintHandler = onSpy.mock.calls.find((c) => c[0] === 'SIGINT')?.[1] as
         | (() => Promise<void>)
         | undefined;
-      await sigintHandler!();
+      await sigintHandler?.();
 
-      expect(logs.some(l => l.includes('Trace saved:'))).toBe(true);
+      expect(logs.some((l) => l.includes('Trace saved:'))).toBe(true);
       exitSpy.mockRestore();
     });
 
@@ -122,14 +122,14 @@ describe('CLI action handlers', () => {
 
       void record({ output: outputDir, name: 'test-rec', providers: 'openai', state: true });
 
-      await new Promise(r => setTimeout(r, 50));
+      await new Promise((r) => setTimeout(r, 50));
 
-      const sigintHandler = onSpy.mock.calls.find(c => c[0] === 'SIGINT')?.[1] as
+      const sigintHandler = onSpy.mock.calls.find((c) => c[0] === 'SIGINT')?.[1] as
         | (() => Promise<void>)
         | undefined;
-      await sigintHandler!();
+      await sigintHandler?.();
 
-      expect(errors.some(e => e.includes('Failed to save trace'))).toBe(true);
+      expect(errors.some((e) => e.includes('Failed to save trace'))).toBe(true);
 
       saveSpy.mockRestore();
       exitSpy.mockRestore();
@@ -142,12 +142,12 @@ describe('CLI action handlers', () => {
       await writeFile(
         join(TEST_TRACES_DIR, 'replay-test.artrace.json'),
         JSON.stringify(trace),
-        'utf-8'
+        'utf-8',
       );
 
       await replay({ trace: 'replay-test', mode: 'stubbed', progress: false });
 
-      expect(logs.some(l => l.includes('Replay complete'))).toBe(true);
+      expect(logs.some((l) => l.includes('Replay complete'))).toBe(true);
     });
 
     it('should show progress when requested', async () => {
@@ -155,7 +155,7 @@ describe('CLI action handlers', () => {
       await writeFile(
         join(TEST_TRACES_DIR, 'replay-progress.artrace.json'),
         JSON.stringify(trace),
-        'utf-8'
+        'utf-8',
       );
 
       const writeSpy = vi.spyOn(process.stdout, 'write').mockImplementation(() => true);
@@ -176,13 +176,13 @@ describe('CLI action handlers', () => {
       await writeFile(
         join(TEST_TRACES_DIR, 'replay-partial.artrace.json'),
         JSON.stringify(trace),
-        'utf-8'
+        'utf-8',
       );
 
       await expect(
-        replay({ trace: 'replay-partial', mode: 'partial', progress: false })
+        replay({ trace: 'replay-partial', mode: 'partial', progress: false }),
       ).rejects.toThrow('EXIT:1');
-      expect(errors.some(e => e.includes('--checkpoint is required'))).toBe(true);
+      expect(errors.some((e) => e.includes('--checkpoint is required'))).toBe(true);
       exitSpy.mockRestore();
     });
   });
@@ -193,13 +193,13 @@ describe('CLI action handlers', () => {
       await writeFile(
         join(TEST_TRACES_DIR, 'explore-test.artrace.json'),
         JSON.stringify(trace),
-        'utf-8'
+        'utf-8',
       );
 
       await explore({ trace: 'explore-test', format: 'table' });
 
-      expect(logs.some(l => l.includes('Trace:'))).toBe(true);
-      expect(logs.some(l => l.includes('llm_call'))).toBe(true);
+      expect(logs.some((l) => l.includes('Trace:'))).toBe(true);
+      expect(logs.some((l) => l.includes('llm_call'))).toBe(true);
     });
 
     it('should explore a trace in json format', async () => {
@@ -207,12 +207,12 @@ describe('CLI action handlers', () => {
       await writeFile(
         join(TEST_TRACES_DIR, 'explore-json.artrace.json'),
         JSON.stringify(trace),
-        'utf-8'
+        'utf-8',
       );
 
       await explore({ trace: 'explore-json', format: 'json' });
 
-      expect(logs.some(l => l.includes('"version"'))).toBe(true);
+      expect(logs.some((l) => l.includes('"version"'))).toBe(true);
     });
 
     it('should explore a trace in tree format', async () => {
@@ -220,12 +220,12 @@ describe('CLI action handlers', () => {
       await writeFile(
         join(TEST_TRACES_DIR, 'explore-tree.artrace.json'),
         JSON.stringify(trace),
-        'utf-8'
+        'utf-8',
       );
 
       await explore({ trace: 'explore-tree', format: 'tree' });
 
-      expect(logs.some(l => l.includes('llm_call:'))).toBe(true);
+      expect(logs.some((l) => l.includes('llm_call:'))).toBe(true);
     });
 
     it('should explore a trace with nested spans in tree format', async () => {
@@ -260,12 +260,12 @@ describe('CLI action handlers', () => {
       await writeFile(
         join(TEST_TRACES_DIR, 'explore-nested.artrace.json'),
         JSON.stringify(trace),
-        'utf-8'
+        'utf-8',
       );
 
       await explore({ trace: 'explore-nested', format: 'tree' });
 
-      expect(logs.some(l => l.includes('child'))).toBe(true);
+      expect(logs.some((l) => l.includes('child'))).toBe(true);
     });
 
     it('should explore a trace with checkpoints in table format', async () => {
@@ -290,13 +290,13 @@ describe('CLI action handlers', () => {
       await writeFile(
         join(TEST_TRACES_DIR, 'explore-cp.artrace.json'),
         JSON.stringify(trace),
-        'utf-8'
+        'utf-8',
       );
 
       await explore({ trace: 'explore-cp', format: 'table' });
 
-      expect(logs.some(l => l.includes('Checkpoints:'))).toBe(true);
-      expect(logs.some(l => l.includes('[CP]'))).toBe(true);
+      expect(logs.some((l) => l.includes('Checkpoints:'))).toBe(true);
+      expect(logs.some((l) => l.includes('[CP]'))).toBe(true);
     });
   });
 
@@ -307,12 +307,12 @@ describe('CLI action handlers', () => {
       await writeFile(
         join(TEST_TRACES_DIR, 'diff-base.artrace.json'),
         JSON.stringify(baseline),
-        'utf-8'
+        'utf-8',
       );
       await writeFile(
         join(TEST_TRACES_DIR, 'diff-curr.artrace.json'),
         JSON.stringify(current),
-        'utf-8'
+        'utf-8',
       );
 
       await diff({
@@ -322,7 +322,7 @@ describe('CLI action handlers', () => {
         similarity: '0.95',
       });
 
-      expect(logs.some(l => l.includes('Baseline:'))).toBe(true);
+      expect(logs.some((l) => l.includes('Baseline:'))).toBe(true);
     });
 
     it('should diff two traces in json format', async () => {
@@ -331,12 +331,12 @@ describe('CLI action handlers', () => {
       await writeFile(
         join(TEST_TRACES_DIR, 'diff-json-base.artrace.json'),
         JSON.stringify(baseline),
-        'utf-8'
+        'utf-8',
       );
       await writeFile(
         join(TEST_TRACES_DIR, 'diff-json-curr.artrace.json'),
         JSON.stringify(current),
-        'utf-8'
+        'utf-8',
       );
 
       await diff({
@@ -346,7 +346,7 @@ describe('CLI action handlers', () => {
         similarity: '0.95',
       });
 
-      expect(logs.some(l => l.includes('"semantic"'))).toBe(true);
+      expect(logs.some((l) => l.includes('"semantic"'))).toBe(true);
     });
 
     it('should report differences when traces diverge', async () => {
@@ -378,12 +378,12 @@ describe('CLI action handlers', () => {
       await writeFile(
         join(TEST_TRACES_DIR, 'diff-div-base.artrace.json'),
         JSON.stringify(baseline),
-        'utf-8'
+        'utf-8',
       );
       await writeFile(
         join(TEST_TRACES_DIR, 'diff-div-curr.artrace.json'),
         JSON.stringify(current),
-        'utf-8'
+        'utf-8',
       );
 
       await diff({
@@ -393,7 +393,7 @@ describe('CLI action handlers', () => {
         similarity: '0.95',
       });
 
-      expect(logs.some(l => l.includes('Baseline:'))).toBe(true);
+      expect(logs.some((l) => l.includes('Baseline:'))).toBe(true);
     });
   });
 
@@ -403,12 +403,12 @@ describe('CLI action handlers', () => {
       await writeFile(
         join(TEST_TRACES_DIR, 'debug-test.artrace.json'),
         JSON.stringify(trace),
-        'utf-8'
+        'utf-8',
       );
 
       await debug({ trace: 'debug-test', watch: [] });
 
-      expect(logs.some(l => l.includes('Debugging trace:'))).toBe(true);
+      expect(logs.some((l) => l.includes('Debugging trace:'))).toBe(true);
     });
 
     it('should debug with breakpoint options', async () => {
@@ -416,7 +416,7 @@ describe('CLI action handlers', () => {
       await writeFile(
         join(TEST_TRACES_DIR, 'debug-bp.artrace.json'),
         JSON.stringify(trace),
-        'utf-8'
+        'utf-8',
       );
 
       await debug({
@@ -428,7 +428,7 @@ describe('CLI action handlers', () => {
         annotations: true,
       });
 
-      expect(logs.some(l => l.includes('Debugging trace:'))).toBe(true);
+      expect(logs.some((l) => l.includes('Debugging trace:'))).toBe(true);
     });
 
     it('should debug a trace with error spans and annotations', async () => {
@@ -493,7 +493,7 @@ describe('CLI action handlers', () => {
       await writeFile(
         join(TEST_TRACES_DIR, 'debug-error.artrace.json'),
         JSON.stringify(trace),
-        'utf-8'
+        'utf-8',
       );
 
       await debug({
@@ -502,8 +502,8 @@ describe('CLI action handlers', () => {
         annotations: true,
       });
 
-      expect(logs.some(l => l.includes('[ERROR]'))).toBe(true);
-      expect(logs.some(l => l.includes('Annotation by tester:'))).toBe(true);
+      expect(logs.some((l) => l.includes('[ERROR]'))).toBe(true);
+      expect(logs.some((l) => l.includes('Annotation by tester:'))).toBe(true);
     });
   });
 });

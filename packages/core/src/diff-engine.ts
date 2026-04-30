@@ -1,17 +1,17 @@
-import {
-  type Trace,
-  type ReplayResult,
-  type DiffResult,
-  type DiffOptions,
-  type TraceDiff,
-  type DiffStatistics,
-} from '@reaatech/shared';
+import type {
+  DiffOptions,
+  DiffResult,
+  DiffStatistics,
+  ReplayResult,
+  Trace,
+  TraceDiff,
+} from '@reaatech/agent-replay-shared';
 
 export class DiffEngine {
   compare(
     recorded: Trace | ReplayResult,
     replayed: ReplayResult,
-    options: DiffOptions
+    options: DiffOptions,
   ): DiffResult {
     const diffs: TraceDiff[] = [];
     const recordedTrace = 'trace' in recorded ? recorded.trace : recorded;
@@ -30,8 +30,8 @@ export class DiffEngine {
 
     const stats: DiffStatistics = {
       totalDifferences: diffs.length,
-      semanticChanges: diffs.filter(d => d.type.startsWith('semantic')).length,
-      structuralChanges: diffs.filter(d => d.type.startsWith('structural')).length,
+      semanticChanges: diffs.filter((d) => d.type.startsWith('semantic')).length,
+      structuralChanges: diffs.filter((d) => d.type.startsWith('structural')).length,
     };
 
     return {
@@ -54,8 +54,8 @@ export class DiffEngine {
       });
     }
 
-    const recordedErrors = recorded.spans.filter(s => s.status === 'error').length;
-    const replayedErrors = replayed.spans.filter(s => s.status === 'error').length;
+    const recordedErrors = recorded.spans.filter((s) => s.status === 'error').length;
+    const replayedErrors = replayed.spans.filter((s) => s.status === 'error').length;
     if (recordedErrors !== replayedErrors) {
       diffs.push({
         type: 'structural.error_count',
@@ -94,8 +94,8 @@ export class DiffEngine {
 
   private extractLLMOutputs(trace: Trace): unknown[] {
     return trace.spans
-      .filter(s => s.kind === 'llm_call')
-      .map(s => s.events.find(e => e.type === 'response')?.data)
+      .filter((s) => s.kind === 'llm_call')
+      .map((s) => s.events.find((e) => e.type === 'response')?.data)
       .filter(Boolean);
   }
 
@@ -105,16 +105,16 @@ export class DiffEngine {
       `  Semantic changes: ${stats.semanticChanges}`,
       `  Structural changes: ${stats.structuralChanges}`,
       '',
-      ...diffs.map(d => `[${d.severity.toUpperCase()}] ${d.message}`),
+      ...diffs.map((d) => `[${d.severity.toUpperCase()}] ${d.message}`),
     ];
     return lines.join('\n');
   }
 
   private calculateSeverity(diffs: TraceDiff[], _stats: DiffStatistics): DiffResult['severity'] {
-    if (diffs.some(d => d.severity === 'critical')) return 'critical';
-    if (diffs.some(d => d.severity === 'high')) return 'high';
-    if (diffs.some(d => d.severity === 'medium')) return 'medium';
-    if (diffs.some(d => d.severity === 'low')) return 'low';
+    if (diffs.some((d) => d.severity === 'critical')) return 'critical';
+    if (diffs.some((d) => d.severity === 'high')) return 'high';
+    if (diffs.some((d) => d.severity === 'medium')) return 'medium';
+    if (diffs.some((d) => d.severity === 'low')) return 'low';
     return 'none';
   }
 }

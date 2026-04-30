@@ -2,10 +2,10 @@ import { mkdtemp, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 
-import type { Trace } from '@reaatech/shared';
-import { describe, it, expect, beforeEach, afterEach } from 'vitest';
+import type { Trace } from '@reaatech/agent-replay-shared';
+import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 
-import { TraceSerializer, TraceMigrator } from '../trace-serializer.js';
+import { TraceSerializer, migrateTrace, validateTraceVersion } from '../trace-serializer.js';
 
 function createTestTrace(): Trace {
   return {
@@ -166,29 +166,29 @@ describe('TraceSerializer', () => {
 describe('TraceMigrator', () => {
   it('should not migrate current version traces', () => {
     const trace = createTestTrace();
-    const migrated = TraceMigrator.migrate(trace);
+    const migrated = migrateTrace(trace);
     expect(migrated.version).toBe('1.0.0');
   });
 
   it('should add version to legacy traces', () => {
     const trace = { ...createTestTrace(), version: undefined } as unknown as Trace;
-    const migrated = TraceMigrator.migrate(trace);
+    const migrated = migrateTrace(trace);
     expect(migrated.version).toBe('1.0.0');
   });
 
   it('should throw on unsupported versions', () => {
     expect(() =>
-      TraceMigrator.validateVersion({
+      validateTraceVersion({
         version: '2.0.0',
         format: 'artrace-json-v1',
         metadata: createTestTrace().metadata,
         schema: { spanKinds: [], eventTypes: [] },
-      })
+      }),
     ).toThrow('incompatible');
   });
 
   it('should throw on unsupported version in migrate', () => {
     const trace = { ...createTestTrace(), version: '99.0.0' };
-    expect(() => TraceMigrator.migrate(trace)).toThrow('Unsupported trace version');
+    expect(() => migrateTrace(trace)).toThrow('Unsupported trace version');
   });
 });

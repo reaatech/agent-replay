@@ -1,5 +1,5 @@
-import { describe, it, expect, beforeEach } from 'vitest';
-import { RecordingEngine } from '@reaatech/core';
+import { RecordingEngine } from '@reaatech/agent-replay-core';
+import { beforeEach, describe, expect, it } from 'vitest';
 
 import { createLangGraphHooks, langgraphStateAdapter } from '../langgraph.js';
 
@@ -53,8 +53,8 @@ describe('LangGraph Integration', () => {
 
       const trace = engine.stopRecording(session);
       const routingEvents = trace.spans
-        .flatMap(s => s.events)
-        .filter(e => e.type === 'response' && e.name === 'routing_decision');
+        .flatMap((s) => s.events)
+        .filter((e) => e.type === 'response' && e.name === 'routing_decision');
       expect(routingEvents.length).toBeGreaterThan(0);
     });
 
@@ -69,8 +69,8 @@ describe('LangGraph Integration', () => {
 
       const trace = engine.stopRecording(session);
       const snapshotEvents = trace.spans
-        .flatMap(s => s.events)
-        .filter(e => e.name === 'graph_complete');
+        .flatMap((s) => s.events)
+        .filter((e) => e.name === 'graph_complete');
       expect(snapshotEvents.length).toBeGreaterThan(0);
     });
 
@@ -85,7 +85,7 @@ describe('LangGraph Integration', () => {
       await hooks.onError('agent', new Error('Node failure'), 'run-1');
 
       const trace = engine.stopRecording(session);
-      const errorEvents = trace.spans.flatMap(s => s.events).filter(e => e.type === 'error');
+      const errorEvents = trace.spans.flatMap((s) => s.events).filter((e) => e.type === 'error');
       expect(errorEvents.length).toBeGreaterThan(0);
     });
 
@@ -113,7 +113,7 @@ describe('LangGraph Integration', () => {
       await hooks.onError('agent', new Error('Standalone error'), 'run-no-start');
 
       const trace = engine.stopRecording(session);
-      const errorSpans = trace.spans.filter(s => s.kind === 'error');
+      const errorSpans = trace.spans.filter((s) => s.kind === 'error');
       expect(errorSpans.length).toBeGreaterThan(0);
     });
 
@@ -168,7 +168,7 @@ describe('LangGraph Integration', () => {
       expect(captured.conversation.messages).toHaveLength(2);
       expect(captured.conversation.messages[0].role).toBe('user');
       expect(captured.conversation.messages[1].toolCalls).toHaveLength(1);
-      expect(captured.conversation.messages[1].toolCalls![0].name).toBe('search');
+      expect(captured.conversation.messages[1].toolCalls?.[0].name).toBe('search');
       expect(captured.toolRegistry.tools).toHaveLength(1);
       expect(captured.variables.counter).toBe(42);
     });

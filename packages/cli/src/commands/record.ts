@@ -1,5 +1,5 @@
+import { LocalFileStorage, RecordingEngine } from '@reaatech/agent-replay-core';
 import { Command } from 'commander';
-import { RecordingEngine, LocalFileStorage } from '@reaatech/core';
 
 export interface RecordOptions {
   output: string;
@@ -14,8 +14,8 @@ export async function record(options: RecordOptions): Promise<void> {
 
   const providers = options.providers
     .split(',')
-    .map(p => p.trim())
-    .filter(p => p.length > 0);
+    .map((p) => p.trim())
+    .filter((p) => p.length > 0);
 
   console.log(`Starting recording: ${options.name}`);
   console.log(`Providers: ${providers.join(', ')}`);
@@ -30,7 +30,7 @@ export async function record(options: RecordOptions): Promise<void> {
   console.log(`Recording session started: ${String(session.trace.metadata.id)}`);
   console.log('Press Ctrl+C to stop recording...');
 
-  return new Promise<void>(resolve => {
+  return new Promise<void>((resolve) => {
     const stop = async () => {
       try {
         const trace = engine.stopRecording(session);

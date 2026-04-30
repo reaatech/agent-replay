@@ -1,5 +1,5 @@
-import { describe, it, expect } from 'vitest';
-import type { Trace, ReplayResult } from '@reaatech/shared';
+import type { ReplayResult, Trace } from '@reaatech/agent-replay-shared';
+import { describe, expect, it } from 'vitest';
 
 import { DiffEngine } from '../diff-engine.js';
 
@@ -76,7 +76,7 @@ describe('DiffEngine', () => {
 
     const diff = engine.compare(trace, result, {});
     expect(diff.severity).toBe('high');
-    expect(diff.diffs.some(d => d.type === 'structural.span_count')).toBe(true);
+    expect(diff.diffs.some((d) => d.type === 'structural.span_count')).toBe(true);
   });
 
   it('should detect error count changes', () => {
@@ -89,7 +89,7 @@ describe('DiffEngine', () => {
 
     const diff = engine.compare(trace, result, {});
     expect(diff.severity).toBe('critical');
-    expect(diff.diffs.some(d => d.type === 'structural.error_count')).toBe(true);
+    expect(diff.diffs.some((d) => d.type === 'structural.error_count')).toBe(true);
   });
 
   it('should detect semantic differences in LLM outputs', () => {
@@ -101,6 +101,6 @@ describe('DiffEngine', () => {
     };
 
     const diff = engine.compare(trace, result, {});
-    expect(diff.diffs.some(d => d.type === 'semantic.llm_output')).toBe(true);
+    expect(diff.diffs.some((d) => d.type === 'semantic.llm_output')).toBe(true);
   });
 });

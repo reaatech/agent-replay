@@ -1,4 +1,4 @@
-import { type Trace, type Span, type DivergenceReport, type ReplayResult } from '@reaatech/shared';
+import type { DivergenceReport, ReplayResult, Span, Trace } from '@reaatech/agent-replay-shared';
 
 import { textSimilarity } from './text-similarity.js';
 
@@ -51,14 +51,14 @@ export class DivergenceDetector {
   detect(
     recorded: Trace,
     live: ReplayResult,
-    options?: Partial<DivergenceOptions>
+    options?: Partial<DivergenceOptions>,
   ): DivergenceReportDetailed | null {
     const opts = { ...this.options, ...options };
     const spanDivergences: SpanDivergence[] = [];
 
     // Check span count
     const spanCountDiff = Math.abs(
-      ((live.trace.spans.length - recorded.spans.length) / recorded.spans.length) * 100
+      ((live.trace.spans.length - recorded.spans.length) / recorded.spans.length) * 100,
     );
     if (spanCountDiff > opts.maxSpanCountDiff) {
       spanDivergences.push({
@@ -117,7 +117,7 @@ export class DivergenceDetector {
     recorded: Span,
     live: Span,
     step: number,
-    opts: Required<DivergenceOptions>
+    opts: Required<DivergenceOptions>,
   ): SpanDivergence | null {
     // Kind mismatch
     if (recorded.kind !== live.kind) {
@@ -133,16 +133,16 @@ export class DivergenceDetector {
 
     // LLM output comparison
     if (recorded.kind === 'llm_call') {
-      const recordedResponse = recorded.events.find(e => e.type === 'response')?.data as
+      const recordedResponse = recorded.events.find((e) => e.type === 'response')?.data as
         | { content?: string }
         | undefined;
-      const liveResponse = live.events.find(e => e.type === 'response')?.data as
+      const liveResponse = live.events.find((e) => e.type === 'response')?.data as
         | { content?: string }
         | undefined;
 
       const similarity = textSimilarity(
         recordedResponse?.content ?? '',
-        liveResponse?.content ?? ''
+        liveResponse?.content ?? '',
       );
 
       if (similarity < opts.minOutputSimilarity) {
@@ -159,10 +159,10 @@ export class DivergenceDetector {
 
     // Tool call order comparison
     if (recorded.kind === 'tool_call' && opts.strictToolCallOrder) {
-      const recordedTool = recorded.events.find(e => e.type === 'request')?.data as
+      const recordedTool = recorded.events.find((e) => e.type === 'request')?.data as
         | { name?: string }
         | undefined;
-      const liveTool = live.events.find(e => e.type === 'request')?.data as
+      const liveTool = live.events.find((e) => e.type === 'request')?.data as
         | { name?: string }
         | undefined;
 
@@ -180,8 +180,8 @@ export class DivergenceDetector {
 
     // Routing decision comparison
     if (recorded.kind === 'routing_decision' && opts.strictRouting) {
-      const recordedRoute = recorded.events.find(e => e.type === 'response')?.data;
-      const liveRoute = live.events.find(e => e.type === 'response')?.data;
+      const recordedRoute = recorded.events.find((e) => e.type === 'response')?.data;
+      const liveRoute = live.events.find((e) => e.type === 'response')?.data;
 
       if (JSON.stringify(recordedRoute) !== JSON.stringify(liveRoute)) {
         return {
@@ -190,7 +190,7 @@ export class DivergenceDetector {
           expectedKind: recorded.kind,
           actualKind: live.kind,
           severity: 'medium',
-          details: `Routing decision changed`,
+          details: 'Routing decision changed',
         };
       }
     }

@@ -5,7 +5,7 @@ This example demonstrates how to record an agent interaction trace.
 ## Usage
 
 ```typescript
-import { RecordingEngine, LocalFileStorage } from '@reaatech/core';
+import { RecordingEngine, LocalFileStorage } from '@reaatech/agent-replay-core';
 
 const engine = new RecordingEngine();
 const session = engine.startRecording({
