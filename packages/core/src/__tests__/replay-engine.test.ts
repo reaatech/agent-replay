@@ -1,10 +1,10 @@
-import { ReplayFailedError } from '@reaatech/agent-replay-shared';
 import type {
   Checkpoint,
   DiffReplayConfig,
   PartialReplayConfig,
   Trace,
 } from '@reaatech/agent-replay-shared';
+import { ReplayFailedError } from '@reaatech/agent-replay-shared';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { ReplayEngine } from '../replay-engine.js';

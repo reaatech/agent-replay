@@ -13,7 +13,13 @@
   "bugs": {
     "url": "https://github.com/reaatech/agent-replay/issues"
   },
-  "keywords": ["agent", "replay", "llm", "cli", "debugging"],
+  "keywords": [
+    "agent",
+    "replay",
+    "llm",
+    "cli",
+    "debugging"
+  ],
   "type": "module",
   "engines": {
     "node": ">=18.0.0"
@@ -34,7 +40,9 @@
       "require": "./dist/index.cjs"
     }
   },
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "build": "tsup src/index.ts src/cli.ts --format esm,cjs --dts",
     "dev": "tsup src/index.ts src/cli.ts --format esm,cjs --dts --watch",

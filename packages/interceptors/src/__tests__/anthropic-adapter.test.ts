@@ -1,11 +1,10 @@
 import { describe, expect, it } from 'vitest';
-
-import { AnthropicAdapter } from '../anthropic-adapter.js';
 import type {
   AnthropicMessage,
   AnthropicMessageCreateParams,
   AnthropicMessageStreamEvent,
 } from '../anthropic-adapter.js';
+import { AnthropicAdapter } from '../anthropic-adapter.js';
 
 describe('AnthropicAdapter', () => {
   const adapter = new AnthropicAdapter();

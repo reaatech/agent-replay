@@ -8,8 +8,8 @@ import {
 import { describe, expect, it, vi } from 'vitest';
 
 import type { LLMProviderAdapter } from '../adapter.js';
-import { BaseInterceptor, InterceptorRegistry } from '../interceptor.js';
 import type { InstallationResult } from '../interceptor.js';
+import { BaseInterceptor, InterceptorRegistry } from '../interceptor.js';
 
 // Concrete subclass for testing BaseInterceptor
 class TestInterceptor extends BaseInterceptor {

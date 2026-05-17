@@ -1,9 +1,9 @@
 import {
+  formatRegressionReport,
+  formatSemanticDiff,
   LocalFileStorage,
   RegressionDetector,
   SemanticDiffEngine,
-  formatRegressionReport,
-  formatSemanticDiff,
 } from '@reaatech/agent-replay-core';
 import { Command } from 'commander';
 

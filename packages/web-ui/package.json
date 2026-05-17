@@ -13,7 +13,13 @@
   "bugs": {
     "url": "https://github.com/reaatech/agent-replay/issues"
   },
-  "keywords": ["agent", "replay", "llm", "viewer", "ui"],
+  "keywords": [
+    "agent",
+    "replay",
+    "llm",
+    "viewer",
+    "ui"
+  ],
   "type": "module",
   "engines": {
     "node": ">=18.0.0"
@@ -28,7 +34,9 @@
       "import": "./dist/index.js"
     }
   },
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "build": "tsup src/index.ts --format esm,cjs --dts",
     "dev": "tsup src/index.ts --format esm --dts --watch",

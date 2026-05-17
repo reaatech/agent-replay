@@ -13,7 +13,14 @@
   "bugs": {
     "url": "https://github.com/reaatech/agent-replay/issues"
   },
-  "keywords": ["agent", "replay", "llm", "openai", "anthropic", "interceptor"],
+  "keywords": [
+    "agent",
+    "replay",
+    "llm",
+    "openai",
+    "anthropic",
+    "interceptor"
+  ],
   "type": "module",
   "engines": {
     "node": ">=18.0.0"
@@ -31,7 +38,9 @@
       "require": "./dist/index.cjs"
     }
   },
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "build": "tsup src/index.ts --format esm,cjs --dts",
     "dev": "tsup src/index.ts --format esm,cjs --dts --watch",

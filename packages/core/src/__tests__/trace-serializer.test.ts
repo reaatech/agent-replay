@@ -5,7 +5,7 @@ import { join } from 'node:path';
 import type { Trace } from '@reaatech/agent-replay-shared';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 
-import { TraceSerializer, migrateTrace, validateTraceVersion } from '../trace-serializer.js';
+import { migrateTrace, TraceSerializer, validateTraceVersion } from '../trace-serializer.js';
 
 function createTestTrace(): Trace {
   return {

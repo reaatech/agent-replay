@@ -1,6 +1,7 @@
 // CLI library exports
-export { record, recordCommand, type RecordOptions } from './commands/record.js';
-export { replay, replayCommand, type ReplayOptions } from './commands/replay.js';
-export { explore, exploreCommand, type ExploreOptions } from './commands/explore.js';
-export { diff, diffCommand, type DiffOptions } from './commands/diff.js';
-export { debug, debugCommand, type DebugOptions } from './commands/debug.js';
+
+export { type DebugOptions, debug, debugCommand } from './commands/debug.js';
+export { type DiffOptions, diff, diffCommand } from './commands/diff.js';
+export { type ExploreOptions, explore, exploreCommand } from './commands/explore.js';
+export { type RecordOptions, record, recordCommand } from './commands/record.js';
+export { type ReplayOptions, replay, replayCommand } from './commands/replay.js';

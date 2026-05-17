@@ -1,8 +1,8 @@
 import {
   AnnotationManager,
+  formatDebugSession,
   LocalFileStorage,
   ReplayDebugger,
-  formatDebugSession,
 } from '@reaatech/agent-replay-core';
 import type { SpanKind } from '@reaatech/agent-replay-shared';
 import { Command } from 'commander';
