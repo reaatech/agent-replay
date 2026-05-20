@@ -1,7 +1,7 @@
 import type { Trace } from '@reaatech/agent-replay-shared';
 import { describe, expect, it } from 'vitest';
 
-import { TraceSummarizer, formatSummary } from '../trace-summarizer.js';
+import { formatSummary, TraceSummarizer } from '../trace-summarizer.js';
 
 function createTrace(
   spans: Array<{

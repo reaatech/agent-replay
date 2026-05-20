@@ -1,5 +1,5 @@
-import { ReplayFailedError } from '@reaatech/agent-replay-shared';
 import type { Span, Trace } from '@reaatech/agent-replay-shared';
+import { ReplayFailedError } from '@reaatech/agent-replay-shared';
 import { afterEach, describe, expect, it } from 'vitest';
 
 import { PartialReplayOrchestrator } from '../partial-replay.js';

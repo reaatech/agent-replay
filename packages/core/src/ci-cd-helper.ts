@@ -2,8 +2,8 @@ import type { Trace } from '@reaatech/agent-replay-shared';
 
 import { AnomalyDetector, formatAnomalyReport } from './anomaly-detector.js';
 import { DivergenceDetector } from './divergence-detector.js';
-import { RegressionDetector, formatRegressionReport } from './regression-detector.js';
-import { SemanticDiffEngine, formatSemanticDiff } from './semantic-diff.js';
+import { formatRegressionReport, RegressionDetector } from './regression-detector.js';
+import { formatSemanticDiff, SemanticDiffEngine } from './semantic-diff.js';
 
 export interface CICDCheckConfig {
   /** Baseline trace to compare against */

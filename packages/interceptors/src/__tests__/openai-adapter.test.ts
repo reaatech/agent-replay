@@ -1,11 +1,10 @@
 import { describe, expect, it } from 'vitest';
-
-import { OpenAIAdapter } from '../openai-adapter.js';
 import type {
   OpenAIChatCompletion,
   OpenAIChatCompletionChunk,
   OpenAIChatCompletionCreateParams,
 } from '../openai-adapter.js';
+import { OpenAIAdapter } from '../openai-adapter.js';
 
 describe('OpenAIAdapter', () => {
   const adapter = new OpenAIAdapter();

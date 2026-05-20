@@ -1,7 +1,7 @@
 import type { Trace } from '@reaatech/agent-replay-shared';
 import { describe, expect, it } from 'vitest';
 
-import { ReplayDebugger, formatDebugSession } from '../debugger.js';
+import { formatDebugSession, ReplayDebugger } from '../debugger.js';
 
 function createTestTrace(): Trace {
   return {

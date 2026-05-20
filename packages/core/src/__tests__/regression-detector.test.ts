@@ -1,7 +1,7 @@
 import type { Trace } from '@reaatech/agent-replay-shared';
 import { describe, expect, it } from 'vitest';
 
-import { RegressionDetector, formatRegressionReport } from '../regression-detector.js';
+import { formatRegressionReport, RegressionDetector } from '../regression-detector.js';
 
 function createTrace(
   id: string,

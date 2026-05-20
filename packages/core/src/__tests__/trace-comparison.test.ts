@@ -1,7 +1,7 @@
 import type { Trace } from '@reaatech/agent-replay-shared';
 import { describe, expect, it } from 'vitest';
 
-import { TraceComparator, formatComparison } from '../trace-comparison.js';
+import { formatComparison, TraceComparator } from '../trace-comparison.js';
 
 function createTrace(
   id: string,

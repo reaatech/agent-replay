@@ -13,7 +13,13 @@
   "bugs": {
     "url": "https://github.com/reaatech/agent-replay/issues"
   },
-  "keywords": ["agent", "replay", "llm", "debugging", "testing"],
+  "keywords": [
+    "agent",
+    "replay",
+    "llm",
+    "debugging",
+    "testing"
+  ],
   "type": "module",
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",
@@ -25,7 +31,9 @@
       "require": "./dist/index.cjs"
     }
   },
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "engines": {
     "node": ">=18.0.0"
   },

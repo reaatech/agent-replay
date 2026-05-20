@@ -1,7 +1,7 @@
 import type { Trace } from '@reaatech/agent-replay-shared';
 import { describe, expect, it } from 'vitest';
 
-import { SemanticDiffEngine, formatSemanticDiff } from '../semantic-diff.js';
+import { formatSemanticDiff, SemanticDiffEngine } from '../semantic-diff.js';
 
 function createTrace(id: string, contents: string[]): Trace {
   return {
