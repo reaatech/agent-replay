@@ -63,8 +63,11 @@ export async function replay(options: ReplayOptions): Promise<void> {
     if (result.divergence) {
       console.log('Divergence detected:', result.divergence);
     }
-  } catch (err) {
-    console.error(`Failed to load trace "${options.trace}":`, (err as Error).message);
+  } catch (err: unknown) {
+    console.error(
+      `Failed to load trace "${options.trace}":`,
+      err instanceof Error ? err.message : String(err),
+    );
     process.exit(1);
   }
 }

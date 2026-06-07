@@ -35,7 +35,7 @@ export class ReplayEngine {
   }
 
   private stubbedReplay(trace: Trace, config: ReplayConfig, startTime: number): ReplayResult {
-    const outputs: unknown[] = [];
+    const outputs: Record<string, unknown>[] = [];
     const totalSteps = trace.spans.length;
 
     for (let i = 0; i < totalSteps; i++) {
@@ -43,7 +43,7 @@ export class ReplayEngine {
       if (span.kind === 'llm_call') {
         const responseEvent = span.events.find((e) => e.type === 'response');
         if (responseEvent) {
-          outputs.push(responseEvent.data);
+          outputs.push(responseEvent.data as Record<string, unknown>);
         }
       }
 
@@ -85,13 +85,13 @@ export class ReplayEngine {
     orchestrator.goLive();
 
     const liveSpans = trace.spans.slice(checkpointIndex + 1);
-    const liveOutputs: unknown[] = [];
+    const liveOutputs: Record<string, unknown>[] = [];
     for (let i = 0; i < liveSpans.length; i++) {
       const span = liveSpans[i];
       if (span.kind === 'llm_call') {
         const responseEvent = span.events.find((e) => e.type === 'response');
         if (responseEvent) {
-          liveOutputs.push(responseEvent.data);
+          liveOutputs.push(responseEvent.data as Record<string, unknown>);
         }
       }
     }

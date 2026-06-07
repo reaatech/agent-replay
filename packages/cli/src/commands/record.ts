@@ -38,7 +38,7 @@ export async function record(options: RecordOptions): Promise<void> {
         console.log(`\nTrace saved: ${savedPath}`);
         resolve();
         process.exit(0);
-      } catch (err) {
+      } catch (err: unknown) {
         console.error('Failed to save trace:', err);
         process.exit(1);
       }

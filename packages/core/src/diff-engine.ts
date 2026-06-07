@@ -92,11 +92,14 @@ export class DiffEngine {
     return diffs;
   }
 
-  private extractLLMOutputs(trace: Trace): unknown[] {
+  private extractLLMOutputs(trace: Trace): Record<string, unknown>[] {
     return trace.spans
       .filter((s) => s.kind === 'llm_call')
-      .map((s) => s.events.find((e) => e.type === 'response')?.data)
-      .filter(Boolean);
+      .map(
+        (s) =>
+          s.events.find((e) => e.type === 'response')?.data as Record<string, unknown> | undefined,
+      )
+      .filter((d): d is Record<string, unknown> => d !== undefined);
   }
 
   private generateReport(diffs: TraceDiff[], stats: DiffStatistics): string {

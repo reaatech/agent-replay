@@ -22,7 +22,7 @@ export class StructuredCloneStrategy {
         conversation: { messages: [] },
         toolRegistry: { tools: [] },
       };
-    } catch (cause) {
+    } catch (cause: unknown) {
       throw new StateCaptureError(
         'Failed to capture state with structured clone',
         typeof state === 'object' ? (state?.constructor?.name ?? 'unknown') : typeof state,
