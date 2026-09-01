@@ -71,8 +71,8 @@ export async function diff(options: DiffOptions): Promise<void> {
     } else {
       console.log('No regressions detected.');
     }
-  } catch (err) {
-    console.error('Failed to load trace:', (err as Error).message);
+  } catch (err: unknown) {
+    console.error('Failed to load trace:', err instanceof Error ? err.message : String(err));
     process.exit(1);
   }
 }

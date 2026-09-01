@@ -5,6 +5,27 @@ import { createGunzip, createGzip } from 'node:zlib';
 
 import type { Checkpoint, Span, Trace, TraceHeader } from '@reaatech/agent-replay-shared';
 
+function parseSpan(raw: Record<string, unknown>): Span {
+  if (typeof raw.id !== 'string' || typeof raw.name !== 'string' || typeof raw.kind !== 'string') {
+    throw new Error('Invalid span in trace file');
+  }
+  return raw as unknown as Span;
+}
+
+function parseCheckpoint(raw: Record<string, unknown>): Checkpoint {
+  if (typeof raw.id !== 'string' || typeof raw.spanId !== 'string') {
+    throw new Error('Invalid checkpoint in trace file');
+  }
+  return raw as unknown as Checkpoint;
+}
+
+function parseTraceHeader(raw: Record<string, unknown>): TraceHeader {
+  if (typeof raw.version !== 'string' || typeof raw.format !== 'string') {
+    throw new Error('Invalid trace header');
+  }
+  return raw as unknown as TraceHeader;
+}
+
 /**
  * Serializes traces to `.artrace.json` files using line-delimited JSON.
  *
@@ -105,7 +126,7 @@ export class TraceSerializer {
       throw new Error('Empty trace file');
     }
 
-    const header = JSON.parse(lines[0]) as TraceHeader;
+    const header = parseTraceHeader(JSON.parse(lines[0]) as Record<string, unknown>);
     const spans: Span[] = [];
     const checkpoints: Checkpoint[] = [];
 
@@ -113,10 +134,10 @@ export class TraceSerializer {
       const line = JSON.parse(lines[i]) as Record<string, unknown>;
       if (line._kind === 'span') {
         const { _kind, ...span } = line;
-        spans.push(span as unknown as Span);
+        spans.push(parseSpan(span));
       } else if (line._kind === 'checkpoint') {
         const { _kind, ...checkpoint } = line;
-        checkpoints.push(checkpoint as unknown as Checkpoint);
+        checkpoints.push(parseCheckpoint(checkpoint));
       }
     }
 
@@ -159,13 +180,13 @@ export class TraceSerializer {
 
         if (parsed._kind === 'span') {
           const { _kind, ...span } = parsed;
-          yield span as unknown as Span;
+          yield parseSpan(span);
         } else if (parsed._kind === 'checkpoint') {
           const { _kind, ...checkpoint } = parsed;
-          yield checkpoint as unknown as Checkpoint;
+          yield parseCheckpoint(checkpoint);
         } else if (parsed._kind === undefined) {
           // Header line
-          yield parsed as unknown as TraceHeader;
+          yield parseTraceHeader(parsed);
         }
       }
     }
@@ -175,10 +196,10 @@ export class TraceSerializer {
       const parsed = JSON.parse(buffer) as Record<string, unknown>;
       if (parsed._kind === 'span') {
         const { _kind, ...span } = parsed;
-        yield span as unknown as Span;
+        yield parseSpan(span);
       } else if (parsed._kind === 'checkpoint') {
         const { _kind, ...checkpoint } = parsed;
-        yield checkpoint as unknown as Checkpoint;
+        yield parseCheckpoint(checkpoint);
       }
     }
   }

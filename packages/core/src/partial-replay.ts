@@ -91,8 +91,8 @@ export class PartialReplayOrchestrator {
     startIndex: number,
     endIndex: number,
     onProgress?: (progress: ReplayProgress) => void,
-  ): { outputs: unknown[]; lastIndex: number } {
-    const outputs: unknown[] = [];
+  ): { outputs: Record<string, unknown>[]; lastIndex: number } {
+    const outputs: Record<string, unknown>[] = [];
     const slice = trace.spans.slice(startIndex, endIndex + 1);
     const totalSteps = slice.length;
 
@@ -101,7 +101,7 @@ export class PartialReplayOrchestrator {
       if (span.kind === 'llm_call') {
         const responseEvent = span.events.find((e) => e.type === 'response');
         if (responseEvent) {
-          outputs.push(responseEvent.data);
+          outputs.push(responseEvent.data as Record<string, unknown>);
         }
       }
 

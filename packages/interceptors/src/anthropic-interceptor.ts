@@ -125,15 +125,16 @@ export class AnthropicInterceptor extends BaseInterceptor {
         content += chunk.delta;
         yield nativeChunk;
       }
-    } catch (error) {
+    } catch (error: unknown) {
       if (spanId) {
+        const message = error instanceof Error ? error.message : String(error);
         this.recorder.captureEvent(
           {
             timestamp: Date.now(),
             type: 'error',
             name: 'stream-error',
-            attributes: { error: (error as Error).message },
-            data: { message: (error as Error).message },
+            attributes: { error: message },
+            data: { message },
           },
           { spanId } as CaptureContext,
         );
